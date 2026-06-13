@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة الطالب - جامعة الإمام</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+  :root {
+    --primary: #0a7c6e;
+    --primary-light: #0d9e8d;
+    --primary-dark: #065c52;
+    --accent: #f0a500;
+    --accent-light: #ffc84a;
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --text: #1a2332;
+    --text-muted: #6b7a8d;
+    --border: #e2e8f0;
+    --danger: #e53e3e;
+    --success: #38a169;
+    --warning: #dd6b20;
+    --info: #3182ce;
+    --sidebar-w: 260px;
+  }
+
+
+  body.dark {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --text: #e8eaf0;
+    --text-muted: #8b95a8;
+    --border: #2a2d3a;
+  }
+  body.dark .sidebar { background: linear-gradient(180deg, #0a0d14 0%, #111520 100%) !important; }
+  body.dark .topbar,
+  body.dark .stat-card,
+  body.dark .card,
+  body.dark .course-card,
+  body.dark .report-card,
+  body.dark .service-card,
+  body.dark .fin-card,
+  body.dark .notif-panel,
+  body.dark .modal-box { background: #1a1d27 !important; }
+  body.dark .search-box,
+  body.dark .inner-search { background: #1a1d27 !important; border-color: #2a2d3a !important; }
+  body.dark .search-box input,
+  body.dark .inner-search input { color: #e8eaf0 !important; }
+  body.dark .icon-btn { background: #1a1d27 !important; border-color: #2a2d3a !important; }
+  body.dark .modal-field input { background: #0f1117 !important; border-color: #2a2d3a !important; color: #e8eaf0 !important; }
+  body.dark .schedule-time,
+  body.dark .grade-bar-bg,
+  body.dark .add-btn.added { background: #0f1117 !important; }
+  body.dark .welcome-banner { background: linear-gradient(135deg, #065c52 0%, #0a7c6e 60%, #0d9e8d 100%) !important; }
+  body.dark .reg-tab { color: #8b95a8; }
+  body.dark .reg-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
+    min-height: 100vh;
+    position: fixed;
+    right: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .logo-text { color: white; }
+  .logo-text h2 { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .logo-text span { font-size: 11px; opacity: 0.7; }
+
+  .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+
+  .nav-section-label {
+    color: rgba(255,255,255,0.45);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 8px 20px 4px;
+    text-transform: uppercase;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 20px;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+    border-right: 3px solid transparent;
+    margin: 1px 0;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-item.active {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    border-right-color: var(--accent);
+  }
+
+  .nav-item .icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .icon { background: var(--accent); }
+
+  .nav-badge {
+    margin-right: auto;
+    background: var(--accent);
+    color: var(--primary-dark);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .sidebar-user {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .user-avatar {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; }
+  .user-info h4 { color: white; font-size: 13px; font-weight: 600; }
+  .user-info span { color: rgba(255,255,255,0.55); font-size: 11px; }
+
+  .logout-btn {
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s;
+  }
+  .logout-btn:hover { color: white; }
+
+  /* ===== MAIN ===== */
+  .main {
+    margin-right: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== TOPBAR ===== */
+  .topbar {
+    background: white;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-title { font-size: 18px; font-weight: 700; color: var(--text); flex: 1; }
+  .topbar-sub { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    width: 240px;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus-within { border-color: var(--primary); }
+  .search-box input {
+    border: none; background: none; outline: none;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px; color: var(--text);
+    width: 100%;
+  }
+  .search-box span { color: var(--text-muted); font-size: 16px; }
+
+  .topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--bg); border-color: var(--primary); }
+
+  .notif-dot {
+    position: absolute;
+    top: 6px; left: 6px;
+    width: 8px; height: 8px;
+    background: var(--danger);
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  /* ===== CONTENT ===== */
+  .content {
+    padding: 24px 28px;
+    flex: 1;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== DASHBOARD ===== */
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 60%, #14c4af 100%);
+    border-radius: 16px;
+    padding: 28px 32px;
+    color: white;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::before {
+    content: '🎓';
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    opacity: 0.15;
+  }
+
+  .welcome-banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .welcome-banner p { font-size: 14px; opacity: 0.85; }
+
+  .welcome-meta {
+    display: flex; gap: 24px; margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ===== STATS GRID ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+  .stat-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .stat-info h3 { font-size: 22px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .stat-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+  .stat-trend {
+    margin-right: auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    align-self: flex-start;
+  }
+
+  .trend-up { background: #e6fffa; color: var(--success); }
+  .trend-warn { background: #fffbeb; color: var(--warning); }
+  .trend-info { background: #ebf8ff; color: var(--info); }
+
+  /* ===== TWO COLUMNS ===== */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: white;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .card-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .card-title span { font-size: 18px; }
+
+  .card-action {
+    font-size: 12px; color: var(--primary);
+    cursor: pointer; font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--primary);
+    transition: all 0.2s;
+  }
+  .card-action:hover { background: var(--primary); color: white; }
+
+  .card-body { padding: 20px; }
+
+  /* ===== SCHEDULE ===== */
+  .schedule-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .schedule-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .schedule-time {
+    text-align: center;
+    min-width: 60px;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  .schedule-time .time { font-size: 13px; font-weight: 700; color: var(--primary); }
+  .schedule-time .period { font-size: 10px; color: var(--text-muted); }
+
+  .schedule-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  .schedule-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .schedule-info p { font-size: 12px; color: var(--text-muted); }
+
+  .schedule-room {
+    margin-right: auto;
+    font-size: 11px;
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ===== ALERTS ===== */
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .alert-item:last-child { margin-bottom: 0; }
+
+  .alert-warning { background: #fffbeb; border: 1px solid #fbd38d; }
+  .alert-info { background: #ebf8ff; border: 1px solid #90cdf4; }
+  .alert-success { background: #e6fffa; border: 1px solid #9ae6b4; }
+  .alert-danger { background: #fff5f5; border: 1px solid #fed7d7; }
+
+  .alert-icon { font-size: 18px; flex-shrink: 0; }
+  .alert-text h4 { font-weight: 600; margin-bottom: 2px; font-size: 13px; }
+  .alert-text p { color: var(--text-muted); font-size: 12px; }
+
+  /* ===== GRADES ===== */
+  .grade-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .grade-row:last-child { border-bottom: none; }
+
+  .grade-course { flex: 1; }
+  .grade-course h4 { font-size: 14px; font-weight: 600; }
+  .grade-course p { font-size: 12px; color: var(--text-muted); }
+
+  .grade-bar-wrap { flex: 1; }
+  .grade-bar-bg {
+    height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden;
+  }
+  .grade-bar-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .grade-badge {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* ===== ATTENDANCE ===== */
+  .attend-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .attend-item:last-child { border-bottom: none; }
+  .attend-name { flex: 1; font-size: 14px; font-weight: 500; }
+  .attend-pct {
+    font-size: 14px; font-weight: 700;
+  }
+  .attend-ring {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ring-ok { background: #e6fffa; color: var(--success); border: 2px solid var(--success); }
+  .ring-warn { background: #fffbeb; color: var(--warning); border: 2px solid var(--warning); }
+  .ring-bad { background: #fff5f5; color: var(--danger); border: 2px solid var(--danger); }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header {
+    margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .page-header h2 { font-size: 20px; font-weight: 800; }
+  .page-header p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ===== REPORTS PAGE ===== */
+  .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .report-card {
+    background: white;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .report-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 20px rgba(10,124,110,0.1);
+    transform: translateY(-2px);
+  }
+
+  .report-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+
+  .report-card h3 { font-size: 15px; font-weight: 700; }
+  .report-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; flex: 1; }
+
+  .download-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    padding: 9px;
+    font-size: 13px; font-weight: 600;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  .download-btn:hover { background: var(--primary-dark); }
+
+  /* ===== REGISTRATION PAGE ===== */
+  .reg-tabs {
+    display: flex; gap: 8px; margin-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0;
+  }
+  .reg-tab {
+    padding: 10px 20px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    font-family: 'Tajawal', sans-serif;
+  }
+  .reg-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .reg-tab:hover { color: var(--primary); }
+
+  .course-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 14px;
+    transition: all 0.2s;
+  }
+  .course-card:hover { border-color: var(--primary); box-shadow: 0 2px 12px rgba(10,124,110,0.08); }
+
+  .course-code {
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px; font-weight: 700;
+    text-align: center;
+    min-width: 64px;
+    line-height: 1.4;
+  }
+
+  .course-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .course-info p { font-size: 12px; color: var(--text-muted); }
+
+  .course-meta {
+    display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;
+  }
+
+  .course-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .tag-hours { background: #ebf8ff; color: var(--info); }
+  .tag-time { background: #f0fff4; color: var(--success); }
+  .tag-avail { background: #e6fffa; color: var(--primary); }
+
+  .add-btn {
+    margin-right: auto;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .add-btn:hover { background: var(--primary-dark); }
+  .add-btn.added { background: var(--bg); color: var(--text-muted); cursor: default; }
+
+  /* ===== SERVICES PAGE ===== */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .service-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex; gap: 14px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .service-card:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(10,124,110,0.1); }
+
+  .service-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .service-info h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .service-info p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  .service-status {
+    margin-top: 8px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .status-open { background: #e6fffa; color: var(--success); }
+  .status-closed { background: #fff5f5; color: var(--danger); }
+  .status-pending { background: #fffbeb; color: var(--warning); }
+
+  /* ===== FINANCIAL PAGE ===== */
+  .fin-summary {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
+  }
+
+  .fin-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+  .fin-card .amount { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+  .fin-card .label { font-size: 12px; color: var(--text-muted); }
+  .amount-green { color: var(--success); }
+  .amount-red { color: var(--danger); }
+  .amount-neutral { color: var(--text); }
+
+  .trans-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .trans-row:last-child { border-bottom: none; }
+  .trans-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .trans-info h4 { font-size: 13px; font-weight: 600; }
+  .trans-info p { font-size: 11px; color: var(--text-muted); }
+  .trans-amount { margin-right: auto; font-size: 14px; font-weight: 700; }
+
+  /* ===== SEARCH BAR ===== */
+  .inner-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+  }
+  .inner-search input {
+    border: none; background: none; outline: none;
+    font-family: 'Tajawal', sans-serif; font-size: 14px;
+    color: var(--text); width: 100%;
+  }
+
+  /* ===== NOTIFICATION PANEL ===== */
+  .notif-panel {
+    position: fixed;
+    top: 64px;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    z-index: 200;
+    display: none;
+    overflow: hidden;
+  }
+  .notif-panel.open { display: block; }
+  #notifPanel { left: 20px; }
+  #settingsPanel { left: 20px; }
+  @media (max-width: 900px) {
+    #notifPanel, #settingsPanel { left: 10px; right: 10px; width: auto; max-width: 340px; }
+  }
+  .notif-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .notif-header h3 { font-size: 15px; font-weight: 700; }
+  .notif-clear { font-size: 12px; color: var(--primary); cursor: pointer; font-weight: 600; }
+  .notif-item { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; cursor: pointer; transition: background 0.15s; }
+  .notif-item:hover { background: var(--bg); }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-dot2 { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .notif-item h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .notif-item p { font-size: 11px; color: var(--text-muted); }
+  .notif-item time { font-size: 10px; color: var(--text-muted); display: block; margin-top: 3px; }
+
+  /* ===== GPA CHART ===== */
+  .gpa-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; padding: 0 4px; }
+  .gpa-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .gpa-bar { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.8s ease; }
+  .gpa-label { font-size: 10px; color: var(--text-muted); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .reports-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: 1fr; }
+    .fin-summary { grid-template-columns: 1fr; }
+  }
+
+  #menu-btn { display: none; }
+  @media (max-width: 680px) {
+    .sidebar { width: 0; overflow: hidden; transition: width 0.3s; }
+    .sidebar.mobile-open { width: 280px; }
+    .main { margin-right: 0; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .reports-grid { grid-template-columns: 1fr; }
+    .search-box { display: none; }
+    #menu-btn { display: flex !important; }
+  }
+  .mobile-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+  }
+  .mobile-overlay.open { display: block; }
+
+  /* ===== MODALS ===== */
+  .modal-box {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -48%);
+    background: white;
+    border-radius: 16px;
+    width: 90%; max-width: 420px;
+    z-index: 400;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal-box.open { display: block; }
+  .modal-head {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-head h3 { font-size: 16px; font-weight: 700; }
+  .modal-head span { cursor: pointer; color: var(--text-muted); font-size: 20px; line-height:1; }
+  .modal-body { padding: 20px; }
+  .modal-field { margin-bottom: 14px; }
+  .modal-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+  .modal-field input {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Tajawal', sans-serif; font-size: 14px;
+    color: var(--text); outline: none; background: var(--bg);
+    transition: border-color 0.2s;
+  }
+  .modal-field input:focus { border-color: var(--primary); background: white; }
+  .modal-field input[readonly] { opacity: 0.7; cursor: default; }
+  .modal-btn {
+    width: 100%; padding: 11px;
+    background: var(--primary); color: white;
+    border: none; border-radius: 8px;
+    font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 4px;
+    transition: background 0.2s;
+  }
+  .modal-btn:hover { background: var(--primary-dark); }
+
+  /* ===== LOGIN PAGE ===== */
+  .login-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: linear-gradient(135deg, #065c52 0%, #0a7c6e 50%, #14c4af 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-box {
+    background: white; border-radius: 24px;
+    padding: 40px 36px; width: 100%; max-width: 400px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  }
+  .login-logo {
+    text-align: center; margin-bottom: 28px;
+  }
+  .login-logo .logo-circle {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #0a7c6e, #14c4af);
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; margin: 0 auto 12px;
+  }
+  .login-logo h2 { font-size: 16px; font-weight: 800; color: #1a2332; line-height: 1.3; }
+  .login-logo p { font-size: 12px; color: #6b7a8d; margin-top: 3px; }
+  .login-tabs {
+    display: flex; background: #f4f6f9; border-radius: 10px; padding: 3px; margin-bottom: 24px;
+  }
+  .login-tab {
+    flex: 1; padding: 8px; text-align: center;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border-radius: 8px; transition: all 0.2s; color: #6b7a8d;
+    border: none; background: none; font-family: 'Tajawal', sans-serif;
+  }
+  .login-tab.active { background: white; color: #0a7c6e; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .login-field { margin-bottom: 14px; }
+  .login-field label { display: block; font-size: 12px; font-weight: 700; color: #6b7a8d; margin-bottom: 6px; }
+  .login-field input {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid #e2e8f0; border-radius: 10px;
+    font-family: 'Tajawal', sans-serif; font-size: 14px;
+    color: #1a2332; outline: none; transition: border-color 0.2s;
+    background: #f9fafb;
+  }
+  .login-field input:focus { border-color: #0a7c6e; background: white; }
+  .login-submit {
+    width: 100%; padding: 13px;
+    background: linear-gradient(135deg, #0a7c6e, #0d9e8d);
+    color: white; border: none; border-radius: 10px;
+    font-family: 'Tajawal', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: 4px; transition: opacity 0.2s;
+  }
+  .login-submit:hover { opacity: 0.9; }
+  .login-submit:disabled { opacity: 0.6; cursor: default; }
+  .login-error {
+    background: #fff5f5; border: 1px solid #fed7d7;
+    color: #e53e3e; border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; margin-bottom: 14px; display: none;
+  }
+  .login-success {
+    background: #e6fffa; border: 1px solid #9ae6b4;
+    color: #38a169; border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; margin-bottom: 14px; display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-circle">🎓</div>
+      <h2>جامعة الإمام محمد بن سعود الإسلامية</h2>
+      <p>بوابة الخدمات الذاتية</p>
+    </div>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchLoginTab('login')">تسجيل الدخول</button>
+      <button class="login-tab" onclick="switchLoginTab('register')">حساب جديد</button>
+    </div>
+    <div id="login-error" class="login-error"></div>
+    <div id="login-success" class="login-success"></div>
+
+    <!-- Login Form -->
+    <div id="form-login">
+      <div class="login-field">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="login-email" placeholder="example@stu.imamu.edu.sa">
+      </div>
+      <div class="login-field">
+        <label>كلمة المرور</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <button class="login-submit" id="login-btn" onclick="doLogin()">دخول</button>
+      <div style="display:flex;align-items:center;gap:10px;margin:14px 0 4px">
+        <div style="flex:1;height:1px;background:#e2e8f0"></div>
+        <span style="font-size:12px;color:#6b7a8d">أو</span>
+        <div style="flex:1;height:1px;background:#e2e8f0"></div>
+      </div>
+      <button onclick="guestAccess()" style="width:100%;padding:11px;background:none;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Tajawal,sans-serif;font-size:14px;font-weight:600;color:#6b7a8d;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='#0a7c6e';this.style.color='#0a7c6e'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#6b7a8d'">
+        👀 تصفح بدون تسجيل دخول
+      </button>
+    </div>
+
+    <!-- Register Form -->
+    <div id="form-register" style="display:none">
+      <div class="login-field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="reg-name" placeholder="عبدالله محمد">
+      </div>
+      <div class="login-field">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="reg-email" placeholder="example@stu.imamu.edu.sa">
+      </div>
+      <div class="login-field">
+        <label>كلمة المرور</label>
+        <input type="password" id="reg-pass" placeholder="8 أحرف على الأقل">
+      </div>
+      <button class="login-submit" id="reg-btn" onclick="doRegister()">إنشاء حساب</button>
+    </div>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">
+      <h2>جامعة الإمام محمد بن سعود</h2>
+      <span id="logo-sub">الخدمات الذاتية</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">الرئيسية</div>
+    <div class="nav-item active" onclick="showPage('dashboard', this)">
+      <div class="icon">🏠</div> <span class="nav-text">لوحة التحكم</span>
+    </div>
+
+    <div class="nav-section-label">الأكاديمي</div>
+    <div class="nav-item" onclick="showPage('registration', this)">
+      <div class="icon">📚</div> <span class="nav-text">التسجيل والجدول</span>
+    </div>
+    <div class="nav-item" onclick="showPage('grades', this)">
+      <div class="icon">📊</div> <span class="nav-text">الدرجات والمعدل</span>
+    </div>
+    <div class="nav-item" onclick="showPage('attendance', this)">
+      <div class="icon">✅</div> <span class="nav-text">الحضور والغياب</span>
+      <span class="nav-badge">تنبيه</span>
+    </div>
+    <div class="nav-item" onclick="showPage('gpa', this)">
+      <div class="icon">🧮</div> <span class="nav-text">حاسبة المعدل</span>
+    </div>
+
+    <div class="nav-section-label">الخدمات</div>
+    <div class="nav-item" onclick="showPage('services', this)">
+      <div class="icon">⚙️</div> <span class="nav-text">الخدمات الطلابية</span>
+    </div>
+    <div class="nav-item" onclick="showPage('financial', this)">
+      <div class="icon">💰</div> <span class="nav-text">الحسابات المالية</span>
+    </div>
+    <div class="nav-item" onclick="showPage('reports', this)">
+      <div class="icon">📄</div> <span class="nav-text">التقارير والوثائق</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">ط</div>
+    <div class="user-info">
+      <h4 id="user-name">الطالب / عبدالله</h4>
+      <span id="user-sub">علوم الحاسب · الفصل 6</span>
+    </div>
+    <div class="logout-btn">⇥</div>
+  </div>
+</aside>
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar" style="direction:ltr">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="icon-btn" id="menu-btn" onclick="toggleMobileMenu()">☰</div>
+      <div>
+        <div class="topbar-title" id="page-title" style="direction:rtl">لوحة التحكم <span class="topbar-sub">· الفصل الثاني 1447</span></div>
+      </div>
+    </div>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="ابحث عن مادة، خدمة، أو تقرير..." style="direction:rtl">
+    </div>
+    <div class="topbar-actions">
+      <div class="icon-btn" id="bell-btn">
+        🔔
+        <div class="notif-dot"></div>
+      </div>
+      <div class="icon-btn" id="settings-btn">⚙️</div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div class="notif-panel" id="settingsPanel" style="width:290px">
+    <div class="notif-header">
+      <h3 id="set-title">⚙️ الإعدادات</h3>
+      <span class="notif-clear" onclick="toggleSettings()">✕</span>
+    </div>
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+      <div id='set-account' style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:10px">الحساب</div>
+      <div class="notif-item" style="padding:10px 0;border:none" onclick="openModal('modal-profile')">
+        <span style="font-size:18px">👤</span>
+        <div style="flex:1"><h4 id="set-profile" style="font-size:13px;font-weight:600">الملف الشخصي</h4></div>
+        <span style="color:var(--text-muted);font-size:14px">›</span>
+      </div>
+      <div class="notif-item" style="padding:10px 0;border:none" onclick="openModal('modal-password')">
+        <span style="font-size:18px">🔑</span>
+        <div style="flex:1"><h4 id="set-pass" style="font-size:13px;font-weight:600">تغيير كلمة المرور</h4></div>
+        <span style="color:var(--text-muted);font-size:14px">›</span>
+      </div>
+      <div class="notif-item" style="padding:10px 0;border:none" onclick="openModal('modal-phone')">
+        <span style="font-size:18px">📱</span>
+        <div style="flex:1"><h4 id="set-phone" style="font-size:13px;font-weight:600">تحديث رقم الجوال</h4></div>
+        <span style="color:var(--text-muted);font-size:14px">›</span>
+      </div>
+    </div>
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+      <div id='set-prefs' style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:10px">التفضيلات</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+        <span id="set-notifs" style="font-size:13px;font-weight:500">🔔 الإشعارات</span>
+        <div id="toggle-notifs" onclick="toggleSwitch('toggle-notifs', true)" style="width:42px;height:24px;background:var(--primary);border-radius:12px;cursor:pointer;position:relative;transition:background 0.3s">
+          <div style="position:absolute;top:3px;right:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform 0.3s"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+        <span id="set-dark" style="font-size:13px;font-weight:500">🌙 الوضع الداكن</span>
+        <div id="toggle-dark" onclick="toggleSwitch('toggle-dark', false)" style="width:42px;height:24px;background:var(--border);border-radius:12px;cursor:pointer;position:relative;transition:background 0.3s">
+          <div style="position:absolute;top:3px;right:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform 0.3s"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+        <span id="set-lang" style="font-size:13px;font-weight:500">🌐 اللغة / Language</span>
+        <div id="lang-toggle" onclick="toggleLang()" style="display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer">
+          <div id="lang-ar" style="padding:4px 10px;font-size:12px;font-weight:700;background:var(--primary);color:white;transition:all 0.2s">ع</div>
+          <div id="lang-en" style="padding:4px 10px;font-size:12px;font-weight:700;color:var(--text-muted);transition:all 0.2s">EN</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:16px 20px">
+      <div class="notif-item" style="padding:10px 0;border:none;cursor:pointer" onclick="openModal('modal-logout')">
+        <span style="font-size:18px">🚪</span>
+        <div><h4 id="set-logout" style="font-size:13px;font-weight:600;color:var(--danger)">تسجيل الخروج</h4></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS OVERLAY -->
+  <div id="modal-overlay" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;backdrop-filter:blur(2px)"></div>
+
+  <!-- MODAL: Profile -->
+  <div id="modal-profile" class="modal-box">
+    <div class="modal-head"><h3>👤 الملف الشخصي</h3><span onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="modal-field"><label>الاسم الكامل</label><input type="text" value="عبدالله محمد الأحمد" readonly></div>
+      <div class="modal-field"><label>رقم الطالب</label><input type="text" value="443012345" readonly></div>
+      <div class="modal-field"><label>البريد الجامعي</label><input type="text" value="s443012345@stu.imamu.edu.sa" readonly></div>
+      <div class="modal-field"><label>الكلية</label><input type="text" value="كلية علوم الحاسب والمعلومات" readonly></div>
+      <button class="modal-btn">حفظ التغييرات</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Password -->
+  <div id="modal-password" class="modal-box">
+    <div class="modal-head"><h3>🔑 تغيير كلمة المرور</h3><span onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="modal-field"><label>كلمة المرور الحالية</label><input type="password" placeholder="••••••••"></div>
+      <div class="modal-field"><label>كلمة المرور الجديدة</label><input type="password" placeholder="••••••••"></div>
+      <div class="modal-field"><label>تأكيد كلمة المرور</label><input type="password" placeholder="••••••••"></div>
+      <button class="modal-btn" onclick="showToast('✅ تم تغيير كلمة المرور بنجاح');closeModal()">تغيير كلمة المرور</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Phone -->
+  <div id="modal-phone" class="modal-box">
+    <div class="modal-head"><h3>📱 تحديث رقم الجوال</h3><span onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="modal-field"><label>رقم الجوال الحالي</label><input type="text" value="05xxxxxxxx" readonly></div>
+      <div class="modal-field"><label>رقم الجوال الجديد</label><input type="tel" placeholder="05xxxxxxxxx"></div>
+      <div class="modal-field"><label>رمز التحقق</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" placeholder="أدخل الرمز" style="flex:1">
+          <button onclick="showToast('📱 تم إرسال رمز التحقق')" style="background:var(--primary);color:white;border:none;border-radius:8px;padding:0 14px;font-family:Tajawal,sans-serif;font-size:13px;cursor:pointer;white-space:nowrap">إرسال</button>
+        </div>
+      </div>
+      <button class="modal-btn" onclick="showToast('✅ تم تحديث رقم الجوال');closeModal()">تحديث الرقم</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Logout -->
+  <div id="modal-logout" class="modal-box" style="max-width:320px">
+    <div class="modal-head"><h3>تسجيل الخروج</h3><span onclick="closeModal()">✕</span></div>
+    <div class="modal-body" style="text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🚪</div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px">هل أنت متأكد من تسجيل الخروج؟</p>
+      <div style="display:flex;gap:10px">
+        <button onclick="closeModal()" style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:white;font-family:Tajawal,sans-serif;font-size:14px;cursor:pointer">إلغاء</button>
+        <button onclick="doLogout()" style="flex:1;padding:10px;border:none;border-radius:8px;background:var(--danger);color:white;font-family:Tajawal,sans-serif;font-size:14px;cursor:pointer;font-weight:600">خروج</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" style="position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a2332;color:white;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:400;transition:transform 0.3s;opacity:0;pointer-events:none"></div>
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="notif-panel" id="notifPanel">
+    <div class="notif-header">
+      <h3>🔔 الإشعارات</h3>
+      <span class="notif-clear">تعليم الكل كمقروء</span>
+    </div>
+    <div class="notif-item">
+      <div class="notif-dot2" style="background:var(--danger)"></div>
+      <div>
+        <h4>تحذير غياب - الكيمياء العضوية</h4>
+        <p>اقتربت من الحد الأقصى للغياب (75%)</p>
+        <time>منذ ساعتين</time>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-dot2" style="background:var(--accent)"></div>
+      <div>
+        <h4>فتح التسجيل للفصل القادم</h4>
+        <p>يبدأ التسجيل الأحد القادم 9 صباحاً</p>
+        <time>منذ يوم</time>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-dot2" style="background:var(--success)"></div>
+      <div>
+        <h4>نتائج الاختبار الأول - رياضيات</h4>
+        <p>تم رصد درجتك: 88/100</p>
+        <time>منذ 3 أيام</time>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-dot2" style="background:var(--info)"></div>
+      <div>
+        <h4>طلب شهادة القيد - مكتمل</h4>
+        <p>شهادتك جاهزة للتحميل</p>
+        <time>منذ 5 أيام</time>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="page active" id="page-dashboard">
+      <div class="welcome-banner">
+        <h2 id="welcome-text">أهلاً، عبدالله 👋</h2>
+        <p id="welcome-sub">الفصل الدراسي الثاني 1447 · أسبوع 11 من 16</p>
+        <div class="welcome-meta">
+          <div class="meta-chip">🎓 <span id="chip1">علوم الحاسب</span></div>
+          <div class="meta-chip">📅 <span id="chip2">الفصل السادس</span></div>
+          <div class="meta-chip">⏳ <span id="chip3">89 ساعة مكتملة</span></div>
+          <div class="meta-chip">🏁 <span id="chip4">31 ساعة متبقية</span></div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card" onclick="showPage('grades', document.querySelector('[onclick*=grades]'))">
+          <div class="stat-icon" style="background:#e6fffa">📈</div>
+          <div class="stat-info">
+            <h3 style="color:var(--primary)">2.72</h3>
+            <p id="stat1-label">المعدل التراكمي</p>
+          </div>
+          <div class="stat-trend trend-up"><span id="stat1-trend">↑ ثابت</span></div>
+        </div>
+        <div class="stat-card" onclick="showPage('registration', document.querySelector('[onclick*=registration]'))">
+          <div class="stat-icon" style="background:#ebf8ff">📚</div>
+          <div class="stat-info">
+            <h3 style="color:var(--info)">5</h3>
+            <p id="stat2-label">مواد مسجلة</p>
+          </div>
+          <div class="stat-trend trend-info"><span id="stat2-trend">15 ساعة</span></div>
+        </div>
+        <div class="stat-card" onclick="showPage('attendance', document.querySelector('[onclick*=attendance]'))">
+          <div class="stat-icon" style="background:#fffbeb">⚠️</div>
+          <div class="stat-info">
+            <h3 style="color:var(--warning)">78%</h3>
+            <p id="stat3-label">نسبة الحضور</p>
+          </div>
+          <div class="stat-trend trend-warn"><span id="stat3-trend">راقب الغياب</span></div>
+        </div>
+        <div class="stat-card" onclick="showPage('financial', document.querySelector('[onclick*=financial]'))">
+          <div class="stat-icon" style="background:#f0fff4">✅</div>
+          <div class="stat-info">
+            <h3 style="color:var(--success)">0</h3>
+            <p id="stat4-label">رصيد مستحق</p>
+          </div>
+          <div class="stat-trend trend-up"><span id="stat4-trend">مسدد</span></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Today Schedule -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>📅</span> <span id="sched-title">جدول اليوم - الأحد</span></div>
+            <div class="card-action" id="sched-full" onclick="showPage('registration', document.querySelector('[onclick*=registration]'))">الجدول كاملاً</div>
+          </div>
+          <div class="card-body">
+            <div class="schedule-item">
+              <div class="schedule-time"><div class="time">7:30</div><div class="period">ص</div></div>
+              <div class="schedule-dot" style="background:#3182ce"></div>
+              <div class="schedule-info">
+                <h4>رياضيات تطبيقية</h4>
+                <p>د. محمد الزهراني</p>
+              </div>
+              <div class="schedule-room">A-201</div>
+            </div>
+            <div class="schedule-item">
+              <div class="schedule-time"><div class="time">9:30</div><div class="period">ص</div></div>
+              <div class="schedule-dot" style="background:#38a169"></div>
+              <div class="schedule-info">
+                <h4>الخوارزميات</h4>
+                <p>د. أحمد العمري</p>
+              </div>
+              <div class="schedule-room">B-115</div>
+            </div>
+            <div class="schedule-item">
+              <div class="schedule-time"><div class="time">12:30</div><div class="period">م</div></div>
+              <div class="schedule-dot" style="background:#e53e3e"></div>
+              <div class="schedule-info">
+                <h4>قواعد البيانات</h4>
+                <p>د. سلمى الحربي</p>
+              </div>
+              <div class="schedule-room">C-302</div>
+            </div>
+            <div class="schedule-item">
+              <div class="schedule-time"><div class="time">2:00</div><div class="period">م</div></div>
+              <div class="schedule-dot" style="background:#9f7aea"></div>
+              <div class="schedule-info">
+                <h4>شبكات الحاسب</h4>
+                <p>د. فهد المطيري</p>
+              </div>
+              <div class="schedule-room">D-108</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>🔔</span> <span id="alert-title">تنبيهات مهمة</span></div>
+          </div>
+          <div class="card-body">
+            <div class="alert-item alert-danger">
+              <div class="alert-icon">⚠️</div>
+              <div class="alert-text">
+                <h4 id="alr1-h">خطر الحرمان - الكيمياء العضوية</h4>
+                <p id="alr1-p">وصلت لـ 6 غيابات، الحد الأقصى 8. تجنب الغياب!</p>
+              </div>
+            </div>
+            <div class="alert-item alert-warning">
+              <div class="alert-icon">📝</div>
+              <div class="alert-text">
+                <h4 id="alr2-h">اختبار منتصف الفصل - الأسبوع القادم</h4>
+                <p id="alr2-p">رياضيات تطبيقية · الثلاثاء 15/11 · قاعة 201</p>
+              </div>
+            </div>
+            <div class="alert-item alert-info">
+              <div class="alert-icon">🎓</div>
+              <div class="alert-text">
+                <h4 id="alr3-h">فتح تسجيل الفصل الصيفي</h4>
+                <p id="alr3-p">يبدأ التسجيل الأحد القادم الساعة 9 صباحاً</p>
+              </div>
+            </div>
+            <div class="alert-item alert-success">
+              <div class="alert-icon">✅</div>
+              <div class="alert-text">
+                <h4 id="alr4-h">شهادة القيد جاهزة للتحميل</h4>
+                <p id="alr4-p">طلبك مكتمل، يمكنك تحميلها من صفحة التقارير</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- GPA Progress -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>📈</span> <span id="gpa-title">تطور المعدل</span></div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-end;gap:8px;height:100px;">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:100%;background:var(--primary-light);border-radius:4px 4px 0 0;height:55px"></div>
+                <span style="font-size:10px;color:var(--text-muted)">فصل 1</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:100%;background:var(--primary-light);border-radius:4px 4px 0 0;height:62px"></div>
+                <span style="font-size:10px;color:var(--text-muted)">فصل 2</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:100%;background:var(--primary-light);border-radius:4px 4px 0 0;height:70px"></div>
+                <span style="font-size:10px;color:var(--text-muted)">فصل 3</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:100%;background:var(--primary-light);border-radius:4px 4px 0 0;height:58px"></div>
+                <span style="font-size:10px;color:var(--text-muted)">فصل 4</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:100%;background:var(--primary-light);border-radius:4px 4px 0 0;height:65px"></div>
+                <span style="font-size:10px;color:var(--text-muted)">فصل 5</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:100%;background:var(--accent);border-radius:4px 4px 0 0;height:68px;position:relative">
+                  <div style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">2.72</div>
+                </div>
+                <span id="gpa-current" style="font-size:10px;color:var(--primary);font-weight:700">الحالي</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completion -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>🏁</span> <span id="comp-title">نسبة إكمال الخطة</span></div>
+          </div>
+          <div class="card-body">
+            <div style="text-align:center;margin-bottom:16px">
+              <div style="font-size:40px;font-weight:800;color:var(--primary)">74%</div>
+              <div id="comp-sub" style="font-size:13px;color:var(--text-muted)">89 من 120 ساعة مكتملة</div>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;height:10px;overflow:hidden;margin-bottom:12px">
+              <div style="width:74%;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:8px"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)">
+              <span id="comp-done">✅ مكتمل: 89 ساعة</span>
+              <span id="comp-left">⏳ متبقي: 31 ساعة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REGISTRATION ===== -->
+    <div class="page" id="page-registration">
+      <div class="page-header">
+        <div>
+          <h2 id="reg-title">📚 التسجيل والجدول الدراسي</h2>
+          <p id="reg-sub">الفصل الثاني 1447 · 15 ساعة مسجلة</p>
+        </div>
+      </div>
+
+      <div class="reg-tabs">
+        <button class="reg-tab active" onclick="switchTab(this, 'tab-mycourses')">موادي المسجلة</button>
+        <button class="reg-tab" onclick="switchTab(this, 'tab-browse')">تصفح المواد</button>
+        <button class="reg-tab" onclick="switchTab(this, 'tab-plan')">خطط مسبقاً</button>
+      </div>
+
+      <div id="tab-mycourses">
+        <div class="course-card">
+          <div class="course-code">كيم<br>1438</div>
+          <div class="course-info">
+            <h4>طرق الفصل الكيميائية</h4>
+            <p>د. إبراهيم الحازمي · قاعة A-201</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">3 ساعات</span>
+              <span class="course-tag tag-time">أ خ · 7:30 ص</span>
+            </div>
+          </div>
+          <button class="add-btn added">مسجل ✓</button>
+        </div>
+        <div class="course-card">
+          <div class="course-code">حيا<br>1101</div>
+          <div class="course-info">
+            <h4>أحياء عامة</h4>
+            <p>د. نورة القحطاني · قاعة B-115</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">4 ساعات</span>
+              <span class="course-tag tag-time">ن ث · 9:30 ص</span>
+            </div>
+          </div>
+          <button class="add-btn added">مسجل ✓</button>
+        </div>
+        <div class="course-card">
+          <div class="course-code">كيم<br>1346</div>
+          <div class="course-info">
+            <h4>الحفز وكيمياء السطح</h4>
+            <p>د. عبدالرحمن السلمي · قاعة C-302</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">3 ساعات</span>
+              <span class="course-tag tag-time">ر · 12:30 م</span>
+            </div>
+          </div>
+          <button class="add-btn added">مسجل ✓</button>
+        </div>
+        <div class="course-card">
+          <div class="course-code">رياض<br>201</div>
+          <div class="course-info">
+            <h4>رياضيات تطبيقية</h4>
+            <p>د. محمد الزهراني · قاعة D-108</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">3 ساعات</span>
+              <span class="course-tag tag-time">أ ث · 7:30 ص</span>
+            </div>
+          </div>
+          <button class="add-btn added">مسجل ✓</button>
+        </div>
+        <div class="course-card">
+          <div class="course-code">حاسب<br>315</div>
+          <div class="course-info">
+            <h4>قواعد البيانات المتقدمة</h4>
+            <p>د. سلمى الحربي · قاعة E-201</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">2 ساعات</span>
+              <span class="course-tag tag-time">خ · 2:00 م</span>
+            </div>
+          </div>
+          <button class="add-btn added">مسجل ✓</button>
+        </div>
+      </div>
+
+      <div id="tab-browse" style="display:none">
+        <div class="inner-search">
+          <span>🔍</span>
+          <input type="text" placeholder="ابحث باسم المادة أو رمزها...">
+        </div>
+        <div class="course-card">
+          <div class="course-code">حاسب<br>401</div>
+          <div class="course-info">
+            <h4>الذكاء الاصطناعي</h4>
+            <p>د. خالد المنصور · قاعة A-305</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">3 ساعات</span>
+              <span class="course-tag tag-time">أ ث · 11:00 ص</span>
+              <span class="course-tag tag-avail">28 مقعد متاح</span>
+            </div>
+          </div>
+          <button class="add-btn" onclick="this.textContent='مسجل ✓';this.classList.add('added')">+ تسجيل</button>
+        </div>
+        <div class="course-card">
+          <div class="course-code">حاسب<br>420</div>
+          <div class="course-info">
+            <h4>أمن المعلومات</h4>
+            <p>د. وليد العتيبي · قاعة B-210</p>
+            <div class="course-meta">
+              <span class="course-tag tag-hours">3 ساعات</span>
+              <span class="course-tag tag-time">ن ر · 1:00 م</span>
+              <span class="course-tag tag-avail">12 مقعد متاح</span>
+            </div>
+          </div>
+          <button class="add-btn" onclick="this.textContent='مسجل ✓';this.classList.add('added')">+ تسجيل</button>
+        </div>
+      </div>
+
+      <div id="tab-plan" style="display:none">
+        <div class="card">
+          <div class="card-body" style="text-align:center;padding:40px">
+            <div style="font-size:48px;margin-bottom:12px">📋</div>
+            <h3 id="plan-h" style="margin-bottom:8px">خطط للفصل القادم مسبقاً</h3>
+            <p id="plan-p" style="color:var(--text-muted);font-size:13px;margin-bottom:20px">اختر المواد التي تريد تسجيلها في الفصل القادم وسيتم حجزها تلقائياً عند فتح التسجيل</p>
+            <button id="plan-btn" class="download-btn" style="width:auto;padding:10px 32px">ابدأ التخطيط</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== GRADES ===== -->
+    <div class="page" id="page-grades">
+      <div class="page-header">
+        <div>
+          <h2 id="grades-title">📊 الدرجات والمعدل</h2>
+          <p id="grades-sub">الفصل الثاني 1447</p>
+        </div>
+      </div>
+
+      <div class="three-col" style="margin-bottom:24px">
+        <div class="card" style="text-align:center">
+          <div class="card-body">
+            <div style="font-size:36px;font-weight:800;color:var(--primary)">2.72</div>
+            <div id="gpa-cum" style="font-size:12px;color:var(--text-muted);margin-top:4px">المعدل التراكمي</div>
+          </div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div class="card-body">
+            <div style="font-size:36px;font-weight:800;color:var(--info)">2.91</div>
+            <div id="gpa-sem" style="font-size:12px;color:var(--text-muted);margin-top:4px">معدل الفصل الحالي</div>
+          </div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div class="card-body">
+            <div style="font-size:36px;font-weight:800;color:var(--success)">89</div>
+            <div id="gpa-hrs" style="font-size:12px;color:var(--text-muted);margin-top:4px">ساعات مكتملة</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>📝</span> <span id="grades-card-title">درجات الفصل الحالي</span></div>
+        </div>
+        <div class="card-body">
+          <div class="grade-row">
+            <div class="grade-course">
+              <h4>أحياء عامة</h4>
+              <p>حيا 1101 · 4 ساعات</p>
+            </div>
+            <div class="grade-bar-wrap">
+              <div class="grade-bar-bg">
+                <div class="grade-bar-fill" style="width:95%;background:var(--success)"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:3px">95 / 100</div>
+            </div>
+            <div class="grade-badge" style="background:#e6fffa;color:var(--success)">A</div>
+          </div>
+          <div class="grade-row">
+            <div class="grade-course">
+              <h4>رياضيات تطبيقية</h4>
+              <p>رياض 201 · 3 ساعات</p>
+            </div>
+            <div class="grade-bar-wrap">
+              <div class="grade-bar-bg">
+                <div class="grade-bar-fill" style="width:88%;background:var(--info)"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:3px">88 / 100</div>
+            </div>
+            <div class="grade-badge" style="background:#ebf8ff;color:var(--info)">B+</div>
+          </div>
+          <div class="grade-row">
+            <div class="grade-course">
+              <h4>قواعد البيانات المتقدمة</h4>
+              <p>حاسب 315 · 2 ساعات</p>
+            </div>
+            <div class="grade-bar-wrap">
+              <div class="grade-bar-bg">
+                <div class="grade-bar-fill" style="width:82%;background:var(--info)"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:3px">82 / 100</div>
+            </div>
+            <div class="grade-badge" style="background:#ebf8ff;color:var(--info)">B</div>
+          </div>
+          <div class="grade-row">
+            <div class="grade-course">
+              <h4>طرق الفصل الكيميائية</h4>
+              <p>كيم 1438 · 3 ساعات</p>
+            </div>
+            <div class="grade-bar-wrap">
+              <div class="grade-bar-bg">
+                <div class="grade-bar-fill" style="width:70%;background:var(--warning)"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:3px">70 / 100</div>
+            </div>
+            <div class="grade-badge" style="background:#fffbeb;color:var(--warning)">C+</div>
+          </div>
+          <div class="grade-row">
+            <div class="grade-course">
+              <h4>الحفز وكيمياء السطح</h4>
+              <p>كيم 1346 · 3 ساعات</p>
+            </div>
+            <div class="grade-bar-wrap">
+              <div class="grade-bar-bg">
+                <div class="grade-bar-fill" style="width:0%;background:var(--border)"></div>
+              </div>
+              <div class="not-graded" style="font-size:11px;color:var(--text-muted);margin-top:3px">لم يُرصد بعد</div>
+            </div>
+            <div class="grade-badge" style="background:var(--bg);color:var(--text-muted)">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ATTENDANCE ===== -->
+    <div class="page" id="page-attendance">
+      <div class="page-header">
+        <div>
+          <h2 id="attend-title">✅ الحضور والغياب</h2>
+          <p id="attend-sub">الفصل الثاني 1447 · الأسبوع 11</p>
+        </div>
+      </div>
+
+      <div class="alert-item alert-danger" style="margin-bottom:20px;border-radius:12px">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-text">
+          <h4 id="attend-warn-h">تحذير: اقتربت من حد الحرمان في مادة الكيمياء العضوية</h4>
+          <p id="attend-warn-p">6 غيابات من أصل 8 مسموح بها. غيابان إضافيان فقط!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>📊</span> <span id="attend-card">نسبة الحضور لكل مادة</span></div>
+        </div>
+        <div class="card-body">
+          <div class="attend-item">
+            <div class="attend-ring ring-ok">✓</div>
+            <div class="attend-name">أحياء عامة</div>
+            <div style="flex:1;margin:0 12px">
+              <div style="background:var(--bg);height:6px;border-radius:3px;overflow:hidden">
+                <div style="width:95%;height:100%;background:var(--success);border-radius:3px"></div>
+              </div>
+            </div>
+            <div class="attend-pct" style="color:var(--success)">95%</div>
+          </div>
+          <div class="attend-item">
+            <div class="attend-ring ring-ok">✓</div>
+            <div class="attend-name">رياضيات تطبيقية</div>
+            <div style="flex:1;margin:0 12px">
+              <div style="background:var(--bg);height:6px;border-radius:3px;overflow:hidden">
+                <div style="width:88%;height:100%;background:var(--success);border-radius:3px"></div>
+              </div>
+            </div>
+            <div class="attend-pct" style="color:var(--success)">88%</div>
+          </div>
+          <div class="attend-item">
+            <div class="attend-ring ring-ok">✓</div>
+            <div class="attend-name">قواعد البيانات</div>
+            <div style="flex:1;margin:0 12px">
+              <div style="background:var(--bg);height:6px;border-radius:3px;overflow:hidden">
+                <div style="width:83%;height:100%;background:var(--success);border-radius:3px"></div>
+              </div>
+            </div>
+            <div class="attend-pct" style="color:var(--success)">83%</div>
+          </div>
+          <div class="attend-item">
+            <div class="attend-ring ring-warn">!</div>
+            <div class="attend-name">الحفز وكيمياء السطح</div>
+            <div style="flex:1;margin:0 12px">
+              <div style="background:var(--bg);height:6px;border-radius:3px;overflow:hidden">
+                <div style="width:77%;height:100%;background:var(--warning);border-radius:3px"></div>
+              </div>
+            </div>
+            <div class="attend-pct" style="color:var(--warning)">77%</div>
+          </div>
+          <div class="attend-item">
+            <div class="attend-ring ring-bad">✗</div>
+            <div class="attend-name">طرق الفصل الكيميائية</div>
+            <div style="flex:1;margin:0 12px">
+              <div style="background:var(--bg);height:6px;border-radius:3px;overflow:hidden">
+                <div style="width:60%;height:100%;background:var(--danger);border-radius:3px"></div>
+              </div>
+            </div>
+            <div class="attend-pct" style="color:var(--danger)">60%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SERVICES ===== -->
+    <div class="page" id="page-services">
+      <div class="page-header">
+        <div>
+          <h2 id="serv-title">⚙️ الخدمات الطلابية</h2>
+          <p id="serv-sub">قدّم طلبك وتابع حالته في مكان واحد</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <div class="card-title"><span>📋</span> <span id="my-requests">طلباتي الحالية</span></div>
+        </div>
+        <div class="card-body" style="text-align:center;padding:24px;color:var(--text-muted)">
+          <div style="font-size:32px;margin-bottom:8px">📭</div>
+          <p id="no-requests">لا توجد طلبات نشطة حالياً</p>
+        </div>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon" style="background:#e6fffa">📜</div>
+          <div class="service-info">
+            <h3 id="s1-h">شهادة قيد</h3>
+            <p id="s1-p">احصل على شهادة رسمية تثبت قيدك في الجامعة بالعربية أو الإنجليزية</p>
+            <span class="service-status status-open">متاح الآن</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:#ebf8ff">🔄</div>
+          <div class="service-info">
+            <h3 id="s2-h">تحويل بين كليات</h3>
+            <p id="s2-p">طلب التحويل من كليتك الحالية إلى كلية أخرى مع استيفاء الشروط</p>
+            <span class="service-status status-closed">مغلق حالياً</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:#fffbeb">⏸️</div>
+          <div class="service-info">
+            <h3 id="s3-h">تأجيل الدراسة</h3>
+            <p id="s3-p">تقديم طلب تأجيل الفصل الدراسي الحالي أو القادم مع بيان الأسباب</p>
+            <span class="service-status status-open">متاح الآن</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:#f0fff4">🎓</div>
+          <div class="service-info">
+            <h3 id="s4-h">طلب التخرج</h3>
+            <p id="s4-p">تقديم طلب التخرج بعد إكمال جميع متطلبات الخطة الدراسية</p>
+            <span class="service-status status-pending">قيد الدراسة</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:#fff5f5">🔁</div>
+          <div class="service-info">
+            <h3 id="s5-h">إعادة القيد</h3>
+            <p id="s5-p">طلب إعادة القيد بعد الانقطاع عن الدراسة وفق اللوائح المعتمدة</p>
+            <span class="service-status status-open">متاح الآن</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:#f5f3ff">📝</div>
+          <div class="service-info">
+            <h3 id="s6-h">الاعتراض على الدرجات</h3>
+            <p id="s6-p">تقديم طلب مراجعة أو اعتراض على درجة مادة معينة خلال الفترة المحددة</p>
+            <span class="service-status status-open">متاح الآن</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FINANCIAL ===== -->
+    <div class="page" id="page-financial">
+      <div class="page-header">
+        <div>
+          <h2 id="fin-title">💰 الحسابات المالية</h2>
+          <p id="fin-sub">اعتباراً من 25 ذو الحجة 1447</p>
+        </div>
+      </div>
+
+      <div class="fin-summary">
+        <div class="fin-card">
+          <div class="amount amount-neutral">48,664 ر.س</div>
+          <div id="fin-total" class="label">إجمالي الرسوم</div>
+        </div>
+        <div class="fin-card">
+          <div class="amount amount-green">48,664 ر.س</div>
+          <div id="fin-paid" class="label">إجمالي المدفوع</div>
+        </div>
+        <div class="fin-card">
+          <div class="amount amount-red">0 ر.س</div>
+          <div id="fin-due" class="label">المبلغ المستحق</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div id="fin-trans" class="card-title"><span>📋</span> سجل المعاملات</div>
+        </div>
+        <div class="card-body">
+          <div class="trans-row">
+            <div class="trans-icon" style="background:#e6fffa">💳</div>
+            <div class="trans-info">
+              <h4>رسوم الفصل الثاني 1447</h4>
+              <p>15/9/1447 · إستلام مكافأة</p>
+            </div>
+            <div class="trans-amount" style="color:var(--success)">+12,166 ر.س</div>
+          </div>
+          <div class="trans-row">
+            <div class="trans-icon" style="background:#e6fffa">💳</div>
+            <div class="trans-info">
+              <h4>رسوم الفصل الأول 1447</h4>
+              <p>1/2/1447 · دفع رسوم</p>
+            </div>
+            <div class="trans-amount" style="color:var(--success)">+12,166 ر.س</div>
+          </div>
+          <div class="trans-row">
+            <div class="trans-icon" style="background:#e6fffa">💳</div>
+            <div class="trans-info">
+              <h4>رسوم الفصل الثاني 1446</h4>
+              <p>12/9/1446 · دفع رسوم</p>
+            </div>
+            <div class="trans-amount" style="color:var(--success)">+12,166 ر.س</div>
+          </div>
+          <div class="trans-row">
+            <div class="trans-icon" style="background:#e6fffa">💳</div>
+            <div class="trans-info">
+              <h4>رسوم الفصل الأول 1446</h4>
+              <p>5/2/1446 · دفع رسوم</p>
+            </div>
+            <div class="trans-amount" style="color:var(--success)">+12,166 ر.س</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REPORTS ===== -->
+    <div class="page" id="page-reports">
+      <div class="page-header">
+        <div>
+          <h2 id="rep-title">📄 التقارير والوثائق</h2>
+          <p id="rep-sub">جميع وثائقك الأكاديمية في مكان واحد</p>
+        </div>
+      </div>
+
+      <div class="reports-grid">
+        <div class="report-card">
+          <div class="report-icon" style="background:#e6fffa">📅</div>
+          <h3 id="r1-h">الجدول الدراسي</h3>
+          <p id="r1-p">جدول المواد الحالي مع المواعيد والقاعات وأسماء الأساتذة</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#ebf8ff">📊</div>
+          <h3 id="r2-h">السجل الأكاديمي</h3>
+          <p id="r2-p">جميع المواد والدرجات والمعدلات التراكمية منذ بداية الدراسة</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#fffbeb">📜</div>
+          <h3 id="r3-h">شهادة القيد</h3>
+          <p id="r3-p">شهادة رسمية بالعربية أو الإنجليزية تثبت قيدك في الجامعة</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#f0fff4">🏁</div>
+          <h3 id="r4-h">المقررات المتبقية</h3>
+          <p id="r4-p">تقرير يوضح المواد المتبقية لإكمال الخطة الدراسية والتخرج</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#fff5f5">📝</div>
+          <h3 id="r5-h">إفادة مواعيد الاختبارات</h3>
+          <p id="r5-p">جدول الاختبارات النهائية مع المواعيد والقاعات</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#f5f3ff">🏅</div>
+          <h3 id="r6-h">الترتيب على الدفعة</h3>
+          <p id="r6-p">تقرير يوضح ترتيبك الأكاديمي بين زملائك في نفس الدفعة</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#ffe4e6">⭐</div>
+          <h3 id="r7-h">شهادة حسن السيرة</h3>
+          <p id="r7-p">شهادة رسمية تثبت حسن السيرة والسلوك خلال فترة الدراسة</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#fef3c7">🚂</div>
+          <h3 id="r8-h">إقرار تذكرة سكة حديد</h3>
+          <p id="r8-p">نموذج إقرار للحصول على تذكرة سكة حديد مخفضة للطلاب</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#e0f2fe">🎓</div>
+          <h3 id="r9-h">وثيقة التخرج</h3>
+          <p id="r9-p">الوثيقة الرسمية للتخرج عند استيفاء جميع المتطلبات</p>
+          <button class="download-btn">⬇ تحميل PDF</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ===== GPA CALCULATOR ===== -->
+    <div class="page" id="page-gpa">
+      <div class="page-header">
+        <div>
+          <h2>🧮 حاسبة المعدل التراكمي</h2>
+          <p>احسب معدلك الفصلي والتراكمي بسهولة · نظام الـ 5 نقاط</p>
+        </div>
+      </div>
+
+      <style>
+        .gpa-calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .gpa-result-card {
+          background: white; border: 1.5px solid var(--border);
+          border-radius: 14px; padding: 24px 20px;
+          display: flex; flex-direction: column; align-items: center; text-align: center;
+          transition: border-color 0.4s;
+        }
+        body.dark .gpa-result-card { background: #1a1d27; }
+        .gpa-ring-wrap { position: relative; width: 110px; height: 110px; margin: 8px 0; }
+        .gpa-ring-wrap svg { transform: rotate(-90deg); }
+        .gpa-ring-center {
+          position: absolute; inset: 0;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .gpa-ring-val { font-size: 22px; font-weight: 800; line-height: 1; }
+        .gpa-ring-max { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+        .gpa-result-label { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .gpa-result-tag { font-size: 13px; font-weight: 700; margin-top: 6px; }
+        .gpa-result-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+        .gpa-table-head {
+          display: grid; grid-template-columns: 1fr 80px 150px 36px;
+          gap: 8px; padding: 0 0 8px;
+          font-size: 11px; color: var(--text-muted); font-weight: 700;
+          border-bottom: 1px solid var(--border); margin-bottom: 8px;
+        }
+        .gpa-table-head span:nth-child(2),
+        .gpa-table-head span:nth-child(3) { text-align: center; }
+        .gpa-row {
+          display: grid; grid-template-columns: 1fr 80px 150px 36px;
+          gap: 8px; align-items: center; margin-bottom: 8px;
+          animation: fadeIn 0.2s ease;
+        }
+        .gpa-row input, .gpa-row select {
+          width: 100%; padding: 9px 12px;
+          border: 1.5px solid var(--border); border-radius: 8px;
+          font-family: 'Tajawal', sans-serif; font-size: 13px;
+          color: var(--text); background: var(--bg); outline: none;
+          transition: border-color 0.2s;
+        }
+        body.dark .gpa-row input, body.dark .gpa-row select { background: #0f1117; border-color: #2a2d3a; color: #e8eaf0; }
+        .gpa-row input:focus, .gpa-row select:focus { border-color: var(--primary); }
+        .gpa-row input[type="number"] { text-align: center; }
+        .gpa-row select option { background: white; color: #1a2332; }
+        body.dark .gpa-row select option { background: #1a1d27; color: #e8eaf0; }
+        .gpa-btn-remove {
+          background: none; border: none; color: var(--text-muted);
+          cursor: pointer; font-size: 20px; border-radius: 8px;
+          width: 36px; height: 36px;
+          display: flex; align-items: center; justify-content: center;
+          transition: color 0.2s, background 0.2s;
+        }
+        .gpa-btn-remove:hover:not(:disabled) { color: var(--danger); background: #fff5f5; }
+        .gpa-btn-remove:disabled { opacity: 0.25; cursor: default; }
+        .gpa-btn-add {
+          width: 100%; background: none;
+          border: 1.5px dashed var(--border);
+          color: var(--primary); border-radius: 8px;
+          padding: 9px; cursor: pointer;
+          font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 600;
+          transition: background 0.2s, border-color 0.2s;
+          margin-top: 4px;
+        }
+        .gpa-btn-add:hover { background: #e6fffa; border-color: var(--primary); }
+        body.dark .gpa-btn-add:hover { background: rgba(10,124,110,0.15); }
+        .gpa-scale-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+        .gpa-scale-chip {
+          background: var(--bg); border: 1.5px solid var(--border);
+          border-radius: 6px; padding: 4px 10px;
+          font-size: 11px; color: var(--text-muted); font-weight: 600;
+        }
+        @media (max-width: 600px) {
+          .gpa-calc-grid { grid-template-columns: 1fr; }
+          .gpa-table-head, .gpa-row { grid-template-columns: 1fr 65px 120px 32px; }
+        }
+      </style>
+
+      <!-- Results -->
+      <div id="gpa-results" style="display:none; margin-bottom:20px">
+        <div id="gpa-results-grid" style="display:grid;gap:16px;margin-bottom:4px"></div>
+      </div>
+
+      <!-- Previous GPA -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title"><span>📋</span> المعدل السابق (اختياري)</div>
+        </div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px">المعدل التراكمي السابق</label>
+              <input type="number" id="calc-prev-gpa" min="0" max="5" step="0.01" placeholder="مثال: 2.72" oninput="calcGPA()" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:Tajawal,sans-serif;font-size:13px;color:var(--text);background:var(--bg);outline:none">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px">مجموع الساعات المكتسبة السابقة</label>
+              <input type="number" id="calc-prev-hrs" min="0" step="1" placeholder="مثال: 89" oninput="calcGPA()" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:Tajawal,sans-serif;font-size:13px;color:var(--text);background:var(--bg);outline:none">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title"><span>📚</span> مواد الفصل الحالي</div>
+        </div>
+        <div class="card-body">
+          <div class="gpa-table-head">
+            <span>اسم المادة</span>
+            <span>الساعات</span>
+            <span>الدرجة</span>
+            <span></span>
+          </div>
+          <div id="gpa-rows"></div>
+          <button class="gpa-btn-add" onclick="gpaAddRow()">+ أضف مادة</button>
+        </div>
+      </div>
+
+      <!-- Grade Scale -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>📊</span> مقياس الدرجات</div>
+        </div>
+        <div class="card-body">
+          <div class="gpa-scale-wrap" id="gpa-scale"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  // ===== GPA CALCULATOR =====
+  const GPA_GRADES = [
+    { label: "ممتاز+",     value: 5.0 },
+    { label: "ممتاز",      value: 5.0 },
+    { label: "جيد جداً+",  value: 4.5 },
+    { label: "جيد جداً",   value: 4.0 },
+    { label: "جيد+",       value: 3.5 },
+    { label: "جيد",        value: 3.0 },
+    { label: "مقبول+",     value: 2.5 },
+    { label: "مقبول",      value: 2.0 },
+    { label: "راسب",       value: 1.0 },
+  ];
+  let gpaRows = [], gpaRowId = 0;
+
+  function gpaGradeColor(g) {
+    if (g >= 4.5) return "#38a169";
+    if (g >= 3.75) return "#3182ce";
+    if (g >= 2.5) return "#dd6b20";
+    return "#e53e3e";
+  }
+  function gpaGradeLabel(g) {
+    if (g >= 4.5) return "ممتاز";
+    if (g >= 3.75) return "جيد جداً";
+    if (g >= 2.5) return "جيد";
+    if (g >= 2.0) return "مقبول";
+    return "راسب";
+  }
+
+  function gpaAddRow() {
+    const id = gpaRowId++;
+    gpaRows.push({ id, name: "", hours: "", grade: "ممتاز" });
+    gpaRenderRows();
+    calcGPA();
+  }
+
+  function gpaRemoveRow(id) {
+    if (gpaRows.length <= 1) return;
+    gpaRows = gpaRows.filter(r => r.id !== id);
+    gpaRenderRows();
+    calcGPA();
+  }
+
+  function gpaUpdateRow(id, field, val) {
+    const r = gpaRows.find(r => r.id === id);
+    if (r) r[field] = val;
+    calcGPA();
+  }
+
+  function gpaRenderRows() {
+    const c = document.getElementById("gpa-rows");
+    if (!c) return;
+    c.innerHTML = "";
+    gpaRows.forEach((row, i) => {
+      const div = document.createElement("div");
+      div.className = "gpa-row";
+      div.innerHTML = `
+        <input type="text" placeholder="مادة ${i+1}" value="${row.name}"
+          oninput="gpaUpdateRow(${row.id},'name',this.value)">
+        <input type="number" min="1" max="6" placeholder="3" value="${row.hours}"
+          oninput="gpaUpdateRow(${row.id},'hours',this.value)">
+        <select onchange="gpaUpdateRow(${row.id},'grade',this.value)">
+          ${GPA_GRADES.map(g => `<option value="${g.label}" ${row.grade===g.label?'selected':''}>${g.label} (${g.value.toFixed(1)})</option>`).join('')}
+        </select>
+        <button class="gpa-btn-remove" onclick="gpaRemoveRow(${row.id})" ${gpaRows.length===1?'disabled':''}>×</button>
+      `;
+      c.appendChild(div);
+    });
+  }
+
+  function buildGPARing(gpa, max, color, label, sub) {
+    const r = 40, cx = 50, cy = 50;
+    const circ = 2 * Math.PI * r;
+    const dash = circ * (gpa / max);
+    return `
+      <div class="gpa-result-card" style="border-color:${color}44">
+        <div class="gpa-result-label">${label}</div>
+        <div class="gpa-ring-wrap">
+          <svg width="110" height="110" viewBox="0 0 100 100">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="10"/>
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="10"
+              stroke-dasharray="${dash.toFixed(2)} ${circ.toFixed(2)}" stroke-linecap="round"
+              style="transition:stroke-dasharray 0.5s ease"/>
+          </svg>
+          <div class="gpa-ring-center">
+            <span class="gpa-ring-val" style="color:${color}">${gpa.toFixed(2)}</span>
+            <span class="gpa-ring-max">من ${max}.00</span>
+          </div>
+        </div>
+        <div class="gpa-result-tag" style="color:${color}">${gpaGradeLabel(gpa)}</div>
+        <div class="gpa-result-sub">${sub}</div>
+      </div>`;
+  }
+
+  function calcGPA() {
+    let semPts = 0, semHrs = 0;
+    gpaRows.forEach(row => {
+      const hrs = parseFloat(row.hours);
+      const g = GPA_GRADES.find(g => g.label === row.grade);
+      if (!row.name.trim() || isNaN(hrs) || hrs <= 0 || !g) return;
+      semPts += g.value * hrs;
+      semHrs += hrs;
+    });
+    const pGPA = parseFloat(document.getElementById("calc-prev-gpa")?.value);
+    const pHrs = parseFloat(document.getElementById("calc-prev-hrs")?.value);
+    const hasPrev = !isNaN(pGPA) && pGPA > 0 && !isNaN(pHrs) && pHrs > 0;
+    const area = document.getElementById("gpa-results");
+    const grid = document.getElementById("gpa-results-grid");
+    if (!area || !grid) return;
+    if (semHrs === 0) { area.style.display = "none"; return; }
+    const semGPA = semPts / semHrs;
+    let cumGPA, totalHrs;
+    if (hasPrev) {
+      totalHrs = pHrs + semHrs;
+      cumGPA = (pGPA * pHrs + semPts) / totalHrs;
+    } else {
+      totalHrs = semHrs;
+      cumGPA = semGPA;
+    }
+    const cumColor = gpaGradeColor(cumGPA);
+    const semColor = gpaGradeColor(semGPA);
+    grid.style.gridTemplateColumns = hasPrev ? "1fr 1fr" : "1fr";
+    grid.innerHTML = buildGPARing(cumGPA, 5, cumColor, "المعدل التراكمي", `${totalHrs} ساعة إجمالي`)
+      + (hasPrev ? buildGPARing(semGPA, 5, semColor, "معدل الفصل الحالي", `${semHrs} ساعة هذا الفصل`) : "");
+    area.style.display = "block";
+  }
+
+  function gpaInit() {
+    const scale = document.getElementById("gpa-scale");
+    if (scale && scale.children.length === 0) {
+      GPA_GRADES.forEach(g => {
+        const span = document.createElement("span");
+        span.className = "gpa-scale-chip";
+        span.textContent = `${g.label} = ${g.value.toFixed(1)}`;
+        scale.appendChild(span);
+      });
+    }
+    if (gpaRows.length === 0) {
+      gpaAddRow(); gpaAddRow(); gpaAddRow();
+    } else {
+      gpaRenderRows();
+    }
+  }
+
+  function showPage(name, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    if (el) el.classList.add('active');
+    if (name === 'gpa') setTimeout(gpaInit, 50);
+    closeMobileMenu();
+
+    const titles = {
+      dashboard: 'لوحة التحكم',
+      registration: 'التسجيل والجدول',
+      grades: 'الدرجات والمعدل',
+      attendance: 'الحضور والغياب',
+      services: 'الخدمات الطلابية',
+      financial: 'الحسابات المالية',
+      reports: 'التقارير والوثائق',
+      gpa: 'حاسبة المعدل'
+    };
+    document.getElementById('page-title').innerHTML = titles[name] + ' <span class="topbar-sub">· الفصل الثاني 1447</span>';
+  }
+
+  function switchTab(btn, tabId) {
+    document.querySelectorAll('.reg-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    ['tab-mycourses','tab-browse','tab-plan'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById(tabId).style.display = 'block';
+  }
+
+  function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('mobileOverlay');
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('open');
+  }
+
+  function closeMobileMenu() {
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('mobileOverlay').classList.remove('open');
+  }
+
+  function toggleNotif() {
+    document.getElementById('notifPanel').classList.toggle('open');
+    document.getElementById('settingsPanel').classList.remove('open');
+  }
+
+  function toggleSettings() {
+    document.getElementById('settingsPanel').classList.toggle('open');
+    document.getElementById('notifPanel').classList.remove('open');
+  }
+
+  // Make sure clicking correct button triggers correct panel
+  // Fix: explicitly bind buttons by finding them in DOM
+  function bindTopbarButtons() {
+    const bell = document.getElementById('bell-btn');
+    const sett = document.getElementById('settings-btn');
+    if (bell) bell.addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.getElementById('notifPanel').classList.toggle('open');
+      document.getElementById('settingsPanel').classList.remove('open');
+    });
+    if (sett) sett.addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.getElementById('settingsPanel').classList.toggle('open');
+      document.getElementById('notifPanel').classList.remove('open');
+    });
+  }
+  document.addEventListener('DOMContentLoaded', bindTopbarButtons);
+
+  function openModal(id) {
+    document.getElementById('modal-overlay').style.display = 'block';
+    document.getElementById(id).classList.add('open');
+    document.getElementById('settingsPanel').classList.remove('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+    document.querySelectorAll('.modal-box').forEach(m => m.classList.remove('open'));
+  }
+
+  let isDark = false;
+  let isEnglish = false;
+
+  // ===== TRANSLATION DATA =====
+  const T = {
+    ar: {
+      // nav & pages
+      dashboard:'لوحة التحكم', registration:'التسجيل والجدول', grades:'الدرجات والمعدل',
+      attendance:'الحضور والغياب', services:'الخدمات الطلابية', financial:'الحسابات المالية',
+      reports:'التقارير والوثائق', gpa:'حاسبة المعدل', subtitle:'· الفصل الثاني 1447',
+      nav_home:'الرئيسية', nav_academic:'الأكاديمي', nav_serv:'الخدمات',
+      nav_dashboard:'لوحة التحكم', nav_reg:'التسجيل والجدول', nav_grades:'الدرجات والمعدل',
+      nav_attend:'الحضور والغياب', nav_student:'الخدمات الطلابية',
+      nav_fin:'الحسابات المالية', nav_reports:'التقارير والوثائق',
+      search_ph:'ابحث عن مادة، خدمة، أو تقرير...',
+      // welcome
+      welcome:'أهلاً، عبدالله 👋', welcome_sub:'الفصل الدراسي الثاني 1447 · أسبوع 11 من 16',
+      chip1:'علوم الحاسب', chip2:'الفصل السادس', chip3:'89 ساعة مكتملة', chip4:'31 ساعة متبقية',
+      // stats
+      stat1_label:'المعدل التراكمي', stat1_trend:'↑ ثابت',
+      stat2_label:'مواد مسجلة', stat2_trend:'15 ساعة',
+      stat3_label:'نسبة الحضور', stat3_trend:'راقب الغياب',
+      stat4_label:'رصيد مستحق', stat4_trend:'مسدد',
+      // schedule card
+      sched_title:'جدول اليوم - الأحد', sched_full:'الجدول كاملاً',
+      // alerts card
+      alert_title:'تنبيهات مهمة',
+      alr1_h:'خطر الحرمان - الكيمياء العضوية', alr1_p:'وصلت لـ 6 غيابات، الحد الأقصى 8. تجنب الغياب!',
+      alr2_h:'اختبار منتصف الفصل - الأسبوع القادم', alr2_p:'رياضيات تطبيقية · الثلاثاء 15/11 · قاعة 201',
+      alr3_h:'فتح تسجيل الفصل الصيفي', alr3_p:'يبدأ التسجيل الأحد القادم الساعة 9 صباحاً',
+      alr4_h:'شهادة القيد جاهزة للتحميل', alr4_p:'طلبك مكتمل، يمكنك تحميلها من صفحة التقارير',
+      // GPA chart
+      gpa_title:'تطور المعدل', gpa_current:'الحالي',
+      // completion
+      comp_title:'نسبة إكمال الخطة', comp_done:'✅ مكتمل: 89 ساعة', comp_left:'⏳ متبقي: 31 ساعة',
+      comp_sub:'89 من 120 ساعة مكتملة',
+      // grades page
+      grades_title:'الدرجات والمعدل', grades_sub:'الفصل الثاني 1447',
+      gpa_cum:'المعدل التراكمي', gpa_sem:'معدل الفصل الحالي', gpa_hrs:'ساعات مكتملة',
+      grades_card_title:'درجات الفصل الحالي', not_graded:'لم يُرصد بعد',
+      // attendance page
+      attend_title:'الحضور والغياب', attend_sub:'الفصل الثاني 1447 · الأسبوع 11',
+      attend_warn_h:'تحذير: اقتربت من حد الحرمان في مادة الكيمياء العضوية',
+      attend_warn_p:'6 غيابات من أصل 8 مسموح بها. غيابان إضافيان فقط!',
+      attend_card:'نسبة الحضور لكل مادة',
+      // registration page
+      reg_title:'التسجيل والجدول الدراسي', reg_sub:'الفصل الثاني 1447 · 15 ساعة مسجلة',
+      tab1:'موادي المسجلة', tab2:'تصفح المواد', tab3:'خطط مسبقاً',
+      reg_search:'ابحث باسم المادة أو رمزها...',
+      registered:'مسجل ✓', add_btn:'+ تسجيل',
+      plan_h:'خطط للفصل القادم مسبقاً',
+      plan_p:'اختر المواد التي تريد تسجيلها في الفصل القادم وسيتم حجزها تلقائياً عند فتح التسجيل',
+      plan_btn:'ابدأ التخطيط',
+      // services page
+      serv_title:'الخدمات الطلابية', serv_sub:'قدّم طلبك وتابع حالته في مكان واحد',
+      my_requests:'📋 طلباتي الحالية', no_requests:'لا توجد طلبات نشطة حالياً',
+      s1_h:'شهادة قيد', s1_p:'احصل على شهادة رسمية تثبت قيدك في الجامعة بالعربية أو الإنجليزية',
+      s2_h:'تحويل بين كليات', s2_p:'طلب التحويل من كليتك الحالية إلى كلية أخرى مع استيفاء الشروط',
+      s3_h:'تأجيل الدراسة', s3_p:'تقديم طلب تأجيل الفصل الدراسي الحالي أو القادم مع بيان الأسباب',
+      s4_h:'طلب التخرج', s4_p:'تقديم طلب التخرج بعد إكمال جميع متطلبات الخطة الدراسية',
+      s5_h:'إعادة القيد', s5_p:'طلب إعادة القيد بعد الانقطاع عن الدراسة وفق اللوائح المعتمدة',
+      s6_h:'الاعتراض على الدرجات', s6_p:'تقديم طلب مراجعة أو اعتراض على درجة مادة معينة خلال الفترة المحددة',
+      st_open:'متاح الآن', st_closed:'مغلق حالياً', st_pending:'قيد الدراسة',
+      // financial page
+      fin_title:'الحسابات المالية', fin_sub:'اعتباراً من 25 ذو الحجة 1447',
+      fin_total:'إجمالي الرسوم', fin_paid:'إجمالي المدفوع', fin_due:'المبلغ المستحق',
+      fin_trans:'📋 سجل المعاملات',
+      // reports page
+      rep_title:'التقارير والوثائق', rep_sub:'جميع وثائقك الأكاديمية في مكان واحد',
+      r1:'الجدول الدراسي',r2:'السجل الأكاديمي',r3:'شهادة القيد',r4:'المقررات المتبقية',
+      r5:'إفادة مواعيد الاختبارات',r6:'الترتيب على الدفعة',r7:'شهادة حسن السيرة',
+      r8:'إقرار تذكرة سكة حديد',r9:'وثيقة التخرج',
+      r1p:'جدول المواد الحالي مع المواعيد والقاعات وأسماء الأساتذة',
+      r2p:'جميع المواد والدرجات والمعدلات التراكمية منذ بداية الدراسة',
+      r3p:'شهادة رسمية بالعربية أو الإنجليزية تثبت قيدك في الجامعة',
+      r4p:'تقرير يوضح المواد المتبقية لإكمال الخطة الدراسية والتخرج',
+      r5p:'جدول الاختبارات النهائية مع المواعيد والقاعات',
+      r6p:'تقرير يوضح ترتيبك الأكاديمي بين زملائك في نفس الدفعة',
+      r7p:'شهادة رسمية تثبت حسن السيرة والسلوك خلال فترة الدراسة',
+      r8p:'نموذج إقرار للحصول على تذكرة سكة حديد مخفضة للطلاب',
+      r9p:'الوثيقة الرسمية للتخرج عند استيفاء جميع المتطلبات',
+      download:'⬇ تحميل PDF',
+      // settings
+      set_title:'⚙️ الإعدادات', set_account:'الحساب', set_profile:'الملف الشخصي',
+      set_pass:'تغيير كلمة المرور', set_phone:'تحديث رقم الجوال', set_prefs:'التفضيلات',
+      set_notifs:'🔔 الإشعارات', set_dark:'🌙 الوضع الداكن',
+      set_lang:'🌐 اللغة / Language', set_logout:'تسجيل الخروج',
+      // user info
+      user_name:'الطالب / عبدالله', user_sub:'علوم الحاسب · الفصل 6',
+      logo_sub:'الخدمات الذاتية',
+    },
+    en: {
+      dashboard:'Dashboard', registration:'Registration', grades:'Grades & GPA',
+      attendance:'Attendance', services:'Student Services', financial:'Financial',
+      reports:'Reports', gpa:'GPA Calculator', subtitle:'· Semester 2, 1447',
+      nav_home:'Home', nav_academic:'Academic', nav_serv:'Services',
+      nav_dashboard:'Dashboard', nav_reg:'Registration', nav_grades:'Grades & GPA',
+      nav_attend:'Attendance', nav_student:'Student Services',
+      nav_fin:'Financial', nav_reports:'Reports',
+      search_ph:'Search for a course, service, or report...',
+      welcome:'Welcome, Abdullah 👋', welcome_sub:'Semester 2, 1447 · Week 11 of 16',
+      chip1:'Computer Science', chip2:'Semester 6', chip3:'89 hrs completed', chip4:'31 hrs remaining',
+      stat1_label:'Cumulative GPA', stat1_trend:'↑ Stable',
+      stat2_label:'Enrolled Courses', stat2_trend:'15 credits',
+      stat3_label:'Attendance Rate', stat3_trend:'Watch absences',
+      stat4_label:'Balance Due', stat4_trend:'Paid',
+      sched_title:"Today's Schedule - Sunday", sched_full:'Full Schedule',
+      alert_title:'Important Alerts',
+      alr1_h:'Absence Risk - Organic Chemistry', alr1_p:'You have 6 absences, max is 8. Avoid missing class!',
+      alr2_h:'Midterm Exam - Next Week', alr2_p:'Applied Math · Tue 15/11 · Hall 201',
+      alr3_h:'Summer Semester Registration Open', alr3_p:'Registration opens next Sunday at 9 AM',
+      alr4_h:'Enrollment Certificate Ready', alr4_p:'Your request is complete. Download from Reports.',
+      gpa_title:'GPA Progress', gpa_current:'Current',
+      comp_title:'Study Plan Completion', comp_done:'✅ Done: 89 hrs', comp_left:'⏳ Left: 31 hrs',
+      comp_sub:'89 of 120 credit hours completed',
+      grades_title:'Grades & GPA', grades_sub:'Semester 2, 1447',
+      gpa_cum:'Cumulative GPA', gpa_sem:'Semester GPA', gpa_hrs:'Completed Hours',
+      grades_card_title:'Current Semester Grades', not_graded:'Not graded yet',
+      attend_title:'Attendance', attend_sub:'Semester 2, 1447 · Week 11',
+      attend_warn_h:'Warning: Approaching absence limit in Organic Chemistry',
+      attend_warn_p:'6 absences out of 8 allowed. Only 2 more allowed!',
+      attend_card:'Attendance Rate per Course',
+      reg_title:'Registration & Schedule', reg_sub:'Semester 2, 1447 · 15 credits enrolled',
+      tab1:'My Courses', tab2:'Browse Courses', tab3:'Plan Ahead',
+      reg_search:'Search by course name or code...',
+      registered:'Enrolled ✓', add_btn:'+ Enroll',
+      plan_h:'Plan Next Semester in Advance',
+      plan_p:'Select courses for next semester and they will be auto-registered when enrollment opens',
+      plan_btn:'Start Planning',
+      serv_title:'Student Services', serv_sub:'Submit and track your requests in one place',
+      my_requests:'📋 My Requests', no_requests:'No active requests at the moment',
+      s1_h:'Enrollment Certificate', s1_p:'Get an official certificate proving your enrollment in Arabic or English',
+      s2_h:'College Transfer', s2_p:'Request a transfer from your current college to another, subject to conditions',
+      s3_h:'Study Deferral', s3_p:'Apply to defer the current or upcoming semester with a stated reason',
+      s4_h:'Graduation Request', s4_p:'Apply for graduation after completing all study plan requirements',
+      s5_h:'Re-enrollment', s5_p:'Request re-enrollment after a study break per approved regulations',
+      s6_h:'Grade Appeal', s6_p:'Submit a review or appeal for a course grade during the specified period',
+      st_open:'Available', st_closed:'Currently Closed', st_pending:'Under Review',
+      fin_title:'Financial Account', fin_sub:'As of 25 Dhul Hijjah 1447',
+      fin_total:'Total Fees', fin_paid:'Total Paid', fin_due:'Amount Due',
+      fin_trans:'📋 Transaction History',
+      rep_title:'Reports & Documents', rep_sub:'All your academic documents in one place',
+      r1:'Class Schedule',r2:'Academic Transcript',r3:'Enrollment Certificate',r4:'Remaining Courses',
+      r5:'Exam Schedule',r6:'Class Ranking',r7:'Good Conduct Certificate',
+      r8:'Rail Ticket Declaration',r9:'Graduation Certificate',
+      r1p:'Current class schedule with times, halls, and instructor names',
+      r2p:'All courses, grades, and cumulative GPAs since enrollment',
+      r3p:'Official Arabic or English certificate proving your enrollment',
+      r4p:'Report showing remaining courses to complete your study plan',
+      r5p:'Final exam schedule with dates, times, and halls',
+      r6p:'Your academic ranking among classmates in the same cohort',
+      r7p:'Official certificate of good conduct during your studies',
+      r8p:'Declaration form for a discounted rail ticket for students',
+      r9p:'Official graduation document upon fulfilling all requirements',
+      download:'⬇ Download PDF',
+      set_title:'⚙️ Settings', set_account:'Account', set_profile:'My Profile',
+      set_pass:'Change Password', set_phone:'Update Phone', set_prefs:'Preferences',
+      set_notifs:'🔔 Notifications', set_dark:'🌙 Dark Mode',
+      set_lang:'🌐 Language / اللغة', set_logout:'Sign Out',
+      user_name:'Abdullah', user_sub:'Computer Science · Semester 6',
+      logo_sub:'Self-Service Portal',
+    }
+  };
+
+  function applyLang(lang) {
+    const t = T[lang];
+    const isEn = lang === 'en';
+    document.documentElement.lang = isEn ? 'en' : 'ar';
+    document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+
+    function setText(id, val) { const el = document.getElementById(id); if(el) el.textContent = val; }
+    function setHTML(id, val) { const el = document.getElementById(id); if(el) el.innerHTML = val; }
+    function setAttr(id, attr, val) { const el = document.getElementById(id); if(el) el.setAttribute(attr, val); }
+
+    // Logo
+    setText('logo-sub', t.logo_sub);
+    // Nav sections
+    const labels = document.querySelectorAll('.nav-section-label');
+    if(labels[0]) labels[0].textContent = t.nav_home;
+    if(labels[1]) labels[1].textContent = t.nav_academic;
+    if(labels[2]) labels[2].textContent = t.nav_serv;
+    // Nav items
+    const navTexts = document.querySelectorAll('.nav-text');
+    const navKeys = ['nav_dashboard','nav_reg','nav_grades','nav_attend','nav_gpa','nav_student','nav_fin','nav_reports'];
+    navTexts.forEach((el,i) => { if(navKeys[i]) el.textContent = t[navKeys[i]]; });
+    // User info
+    setText('user-name', t.user_name);
+    setText('user-sub', t.user_sub);
+    // Search
+    const sp = document.querySelector('.search-box input'); if(sp) sp.placeholder = t.search_ph;
+    // Page title
+    const currentPage = document.querySelector('.page.active');
+    if(currentPage) {
+      const pid = currentPage.id.replace('page-','');
+      setHTML('page-title', t[pid] + ' <span class="topbar-sub">' + t.subtitle + '</span>');
+    }
+    // Welcome
+    setText('welcome-text', t.welcome);
+    setText('welcome-sub', t.welcome_sub);
+    setText('chip1', t.chip1); setText('chip2', t.chip2); setText('chip3', t.chip3); setText('chip4', t.chip4);
+    // Stats
+    setText('stat1-label', t.stat1_label); setText('stat1-trend', t.stat1_trend);
+    setText('stat2-label', t.stat2_label); setText('stat2-trend', t.stat2_trend);
+    setText('stat3-label', t.stat3_label); setText('stat3-trend', t.stat3_trend);
+    setText('stat4-label', t.stat4_label); setText('stat4-trend', t.stat4_trend);
+    // Dashboard cards
+    setText('sched-title', t.sched_title); setText('sched-full', t.sched_full);
+    setText('alert-title', t.alert_title);
+    setText('alr1-h', t.alr1_h); setText('alr1-p', t.alr1_p);
+    setText('alr2-h', t.alr2_h); setText('alr2-p', t.alr2_p);
+    setText('alr3-h', t.alr3_h); setText('alr3-p', t.alr3_p);
+    setText('alr4-h', t.alr4_h); setText('alr4-p', t.alr4_p);
+    setText('gpa-title', t.gpa_title); setText('gpa-current', t.gpa_current);
+    setText('comp-title', t.comp_title); setText('comp-sub', t.comp_sub);
+    setText('comp-done', t.comp_done); setText('comp-left', t.comp_left);
+    // Grades page
+    setText('grades-title', t.grades_title); setText('grades-sub', t.grades_sub);
+    setText('gpa-cum', t.gpa_cum); setText('gpa-sem', t.gpa_sem); setText('gpa-hrs', t.gpa_hrs);
+    setText('grades-card-title', t.grades_card_title);
+    document.querySelectorAll('.not-graded').forEach(el => el.textContent = t.not_graded);
+    // Attendance page
+    setText('attend-title', t.attend_title); setText('attend-sub', t.attend_sub);
+    setText('attend-warn-h', t.attend_warn_h); setText('attend-warn-p', t.attend_warn_p);
+    setText('attend-card', t.attend_card);
+    // Registration page
+    setText('reg-title', t.reg_title); setText('reg-sub', t.reg_sub);
+    const tabs = document.querySelectorAll('.reg-tab');
+    if(tabs[0]) tabs[0].textContent = t.tab1;
+    if(tabs[1]) tabs[1].textContent = t.tab2;
+    if(tabs[2]) tabs[2].textContent = t.tab3;
+    const rs = document.querySelector('#tab-browse .inner-search input'); if(rs) rs.placeholder = t.reg_search;
+    document.querySelectorAll('.add-btn.added').forEach(el => el.textContent = t.registered);
+    const addBtns = document.querySelectorAll('.add-btn:not(.added)'); addBtns.forEach(el => el.textContent = t.add_btn);
+    setText('plan-h', t.plan_h); setText('plan-p', t.plan_p); setText('plan-btn', t.plan_btn);
+    // Services page
+    setText('serv-title', t.serv_title); setText('serv-sub', t.serv_sub);
+    setText('my-requests', t.my_requests); setText('no-requests', t.no_requests);
+    setText('s1-h', t.s1_h); setText('s1-p', t.s1_p);
+    setText('s2-h', t.s2_h); setText('s2-p', t.s2_p);
+    setText('s3-h', t.s3_h); setText('s3-p', t.s3_p);
+    setText('s4-h', t.s4_h); setText('s4-p', t.s4_p);
+    setText('s5-h', t.s5_h); setText('s5-p', t.s5_p);
+    setText('s6-h', t.s6_h); setText('s6-p', t.s6_p);
+    document.querySelectorAll('.status-open').forEach(el => el.textContent = t.st_open);
+    document.querySelectorAll('.status-closed').forEach(el => el.textContent = t.st_closed);
+    document.querySelectorAll('.status-pending').forEach(el => el.textContent = t.st_pending);
+    // Financial page
+    setText('fin-title', t.fin_title); setText('fin-sub', t.fin_sub);
+    setText('fin-total', t.fin_total); setText('fin-paid', t.fin_paid); setText('fin-due', t.fin_due);
+    setText('fin-trans', t.fin_trans);
+    // Reports page
+    setText('rep-title', t.rep_title); setText('rep-sub', t.rep_sub);
+    for(let i=1;i<=9;i++){
+      setText('r'+i+'-h', t['r'+i]); setText('r'+i+'-p', t['r'+i+'p']);
+    }
+    document.querySelectorAll('.download-btn').forEach(el => el.textContent = t.download);
+    // Settings
+    setText('set-title', t.set_title); setText('set-account', t.set_account);
+    setText('set-profile', t.set_profile); setText('set-pass', t.set_pass);
+    setText('set-phone', t.set_phone); setText('set-prefs', t.set_prefs);
+    setText('set-notifs', t.set_notifs); setText('set-dark', t.set_dark);
+    setText('set-lang', t.set_lang); setText('set-logout', t.set_logout);
+    // Lang buttons
+    document.getElementById('lang-ar').style.background = isEn ? 'transparent' : 'var(--primary)';
+    document.getElementById('lang-ar').style.color = isEn ? 'var(--text-muted)' : 'white';
+    document.getElementById('lang-en').style.background = isEn ? 'var(--primary)' : 'transparent';
+    document.getElementById('lang-en').style.color = isEn ? 'white' : 'var(--text-muted)';
+  }
+
+  function toggleLang() {
+    isEnglish = !isEnglish;
+    applyLang(isEnglish ? 'en' : 'ar');
+    showToast(isEnglish ? '🌐 Switched to English' : '🌐 تم التبديل للعربية');
+  }
+
+  function toggleSwitch(id, currentState) {
+    const el = document.getElementById(id);
+    const knob = el.querySelector('div');
+    if (currentState) {
+      el.style.background = 'var(--border)';
+      knob.style.transform = 'translateX(0)';
+      el.setAttribute('onclick', "toggleSwitch('" + id + "', false)");
+      if (id === 'toggle-dark') { isDark = false; document.body.classList.remove('dark'); showToast(isEnglish ? '☀️ Light mode on' : '☀️ تم تفعيل الوضع الفاتح'); }
+    } else {
+      el.style.background = 'var(--primary)';
+      knob.style.transform = 'translateX(-18px)';
+      el.setAttribute('onclick', "toggleSwitch('" + id + "', true)");
+      if (id === 'toggle-dark') { isDark = true; document.body.classList.add('dark'); showToast(isEnglish ? '🌙 Dark mode on' : '🌙 تم تفعيل الوضع الداكن'); }
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(80px)';
+    }, 2500);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.notif-panel') && !e.target.closest('#bell-btn') && !e.target.closest('#settings-btn')) {
+      document.getElementById('notifPanel').classList.remove('open');
+      document.getElementById('settingsPanel').classList.remove('open');
+    }
+  });
+
+  // ===== SUPABASE AUTH =====
+  const SUPA_URL = 'https://prgdjchuihvrenerhsve.supabase.co';
+  const SUPA_KEY = 'sb_publishable_vWjzayt3B1TFdRt3IynXAQ_9_FQKZpf';
+  const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+  let currentUser = null;
+
+  async function initAuth() {
+    const { data: { session } } = await supa.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      showApp(session.user);
+    } else {
+      document.getElementById('loginOverlay').style.display = 'flex';
+    }
+    supa.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        currentUser = session.user;
+        showApp(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null;
+        document.getElementById('loginOverlay').style.display = 'flex';
+      }
+    });
+  }
+
+  function showApp(user) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    // Update user info in sidebar
+    const name = user.user_metadata?.name || user.email?.split('@')[0] || 'الطالب';
+    const nameEl = document.getElementById('user-name');
+    if (nameEl) nameEl.textContent = name;
+    loadUserProfile(user.id);
+  }
+
+  async function loadUserProfile(userId) {
+    const { data, error } = await supa.from('profiles').select('*').eq('id', userId).single();
+    if (data) {
+      if (data.name) document.getElementById('user-name').textContent = data.name;
+    }
+  }
+
+  async function saveUserProfile(userId, profileData) {
+    await supa.from('profiles').upsert({ id: userId, ...profileData });
+  }
+
+  async function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    const btn = document.getElementById('login-btn');
+    const errEl = document.getElementById('login-error');
+    errEl.style.display = 'none';
+    if (!email || !pass) { showLoginError('يرجى تعبئة جميع الحقول'); return; }
+    btn.disabled = true; btn.textContent = 'جاري الدخول...';
+    const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
+    btn.disabled = false; btn.textContent = 'دخول';
+    if (error) { showLoginError(getArabicError(error.message)); return; }
+  }
+
+  async function doRegister() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass = document.getElementById('reg-pass').value;
+    const btn = document.getElementById('reg-btn');
+    document.getElementById('login-error').style.display = 'none';
+    if (!name || !email || !pass) { showLoginError('يرجى تعبئة جميع الحقول'); return; }
+    if (pass.length < 6) { showLoginError('كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
+    btn.disabled = true; btn.textContent = 'جاري الإنشاء...';
+    const { data, error } = await supa.auth.signUp({
+      email, password: pass,
+      options: { data: { name } }
+    });
+    btn.disabled = false; btn.textContent = 'إنشاء حساب';
+    if (error) { showLoginError(getArabicError(error.message)); return; }
+    if (data.user) {
+      await supa.from('profiles').upsert({ id: data.user.id, name });
+    }
+    document.getElementById('login-success').textContent = '✅ تم إنشاء الحساب! يمكنك تسجيل الدخول الآن.';
+    document.getElementById('login-success').style.display = 'block';
+    switchLoginTab('login');
+  }
+
+  async function doLogout() {
+    await supa.auth.signOut();
+    closeModal();
+    showToast('👋 تم تسجيل الخروج');
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('login-error');
+    el.textContent = msg; el.style.display = 'block';
+  }
+
+  function getArabicError(msg) {
+    if (msg.includes('Invalid login')) return '❌ البريد أو كلمة المرور غير صحيحة';
+    if (msg.includes('already registered')) return '❌ البريد مسجل مسبقاً';
+    if (msg.includes('valid email')) return '❌ يرجى إدخال بريد إلكتروني صحيح';
+    if (msg.includes('Password')) return '❌ كلمة المرور ضعيفة جداً';
+    return '❌ حدث خطأ، يرجى المحاولة مرة أخرى';
+  }
+
+  function switchLoginTab(tab) {
+    document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('login-success').style.display = 'none';
+  }
+
+  function guestAccess() {
+    document.getElementById('loginOverlay').style.display = 'none';
+    const nameEl = document.getElementById('user-name');
+    if (nameEl) nameEl.textContent = 'زائر';
+    showToast('👀 تصفح كزائر - بياناتك لن تُحفظ');
+  }
+
+  // Init auth on load
+  initAuth();
+
+</script>
+</body>
+</html>
