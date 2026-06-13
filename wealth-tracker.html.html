@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>خطة الثروة — محمد ٢٥</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b35;
+    --text: #e8e8f0;
+    --text2: #8888aa;
+    --text3: #5555777;
+    --gold: #f5c842;
+    --red: #ff4757;
+    --green: #00d4aa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .logo {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .logo p {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 8px 12px 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: right;
+    font-family: inherit;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+    width: 100%;
+  }
+
+  .nav-btn:hover { background: var(--surface2); color: var(--text); }
+  .nav-btn.active { background: var(--accent); color: white; }
+  .nav-btn .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* ===== MAIN ===== */
+  .main {
+    margin-right: 260px;
+    flex: 1;
+    padding: 32px;
+    min-height: 100vh;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HEADER ===== */
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  .page-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .page-header p {
+    color: var(--text2);
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+  /* ===== CARDS ===== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card-label {
+    font-size: 11px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  .card-value {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .card-value.gold { color: var(--gold); }
+  .card-value.green { color: var(--green); }
+  .card-value.accent { color: var(--accent); }
+  .card-value.red { color: var(--red); }
+
+  .card-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 6px;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .progress-title { font-size: 15px; font-weight: 600; }
+
+  .progress-amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .progress-bar {
+    background: var(--border);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.5s ease;
+  }
+
+  .progress-stages {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .stage-chip {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .stage-chip.done { background: var(--accent2); color: #000; border-color: var(--accent2); }
+  .stage-chip.current { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ===== DAILY PLAN ===== */
+  .daily-container {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+  }
+
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .task-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .task-item:hover { border-color: var(--accent); }
+  .task-item.done { opacity: 0.5; }
+  .task-item.done .task-text { text-decoration: line-through; }
+
+  .task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-size: 12px;
+  }
+
+  .task-item.done .task-check {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #000;
+  }
+
+  .task-text { font-size: 14px; flex: 1; }
+  .task-category {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .cat-income { background: rgba(108,99,255,0.2); color: var(--accent); }
+  .cat-skill { background: rgba(0,212,170,0.2); color: var(--accent2); }
+  .cat-mindset { background: rgba(245,200,66,0.2); color: var(--gold); }
+  .cat-save { background: rgba(255,107,53,0.2); color: var(--accent3); }
+
+  /* ===== SIDE PANEL ===== */
+  .side-panel { display: flex; flex-direction: column; gap: 16px; }
+
+  .panel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .panel-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .quote-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    font-style: italic;
+    border-right: 3px solid var(--accent);
+    padding-right: 14px;
+  }
+
+  .quote-author {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ===== INCOME TRACKER ===== */
+  .income-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .income-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .income-form h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .form-group { margin-bottom: 12px; }
+
+  .form-group label {
+    font-size: 12px;
+    color: var(--text2);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    direction: rtl;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--accent);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #5a52e0; }
+  .btn-danger { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+
+  .entries-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; }
+
+  .entry-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .entry-info { flex: 1; }
+  .entry-desc { font-size: 13px; font-weight: 500; }
+  .entry-date { font-size: 11px; color: var(--text2); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
+
+  .entry-amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+    margin-left: 12px;
+  }
+
+  .entry-amount.expense { color: var(--red); }
+
+  /* ===== ROADMAP ===== */
+  .roadmap-container { display: flex; flex-direction: column; gap: 20px; }
+
+  .milestone {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+
+  .milestone.active-ms { border-color: var(--accent); }
+  .milestone.done-ms { border-color: var(--accent2); opacity: 0.7; }
+
+  .milestone-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .milestone-amount {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--gold);
+  }
+
+  .milestone-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .badge-current { background: var(--accent); color: white; }
+  .badge-next { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .badge-done { background: var(--accent2); color: #000; }
+
+  .milestone-items { display: flex; flex-direction: column; gap: 8px; }
+
+  .ms-item {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text2);
+    align-items: flex-start;
+  }
+
+  .ms-item-icon { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+
+  /* ===== SKILLS ===== */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .skill-name { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .skill-desc { font-size: 13px; color: var(--text2); margin-bottom: 14px; line-height: 1.6; }
+
+  .skill-bar-label { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .skill-bar-label span { font-size: 12px; color: var(--text2); font-family: 'IBM Plex Mono', monospace; }
+
+  .skill-progress { background: var(--border); border-radius: 100px; height: 6px; overflow: hidden; }
+  .skill-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+  .skill-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: rgba(108,99,255,0.15);
+    color: var(--accent);
+    margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ===== STATS CHART ===== */
+  .chart-placeholder {
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text2);
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 160px;
+    padding: 0 20px;
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+  }
+
+  .chart-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .chart-bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--accent); opacity: 0.7; min-height: 4px; transition: height 0.3s; }
+  .chart-bar.income-bar { background: var(--accent2); }
+  .chart-bar-label { font-size: 10px; color: var(--text2); font-family: 'IBM Plex Mono', monospace; }
+
+  /* ===== ALERTS ===== */
+  .alert {
+    background: rgba(108,99,255,0.1);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .alert.warning { background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.3); }
+
+  /* ===== MOBILE ===== */
+  .hamburger {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 18px;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 90;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(260px); transition: transform 0.3s; right: 0; }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-right: 0; padding: 16px; padding-top: 60px; }
+    .hamburger { display: block; }
+    .overlay.show { display: block; }
+    .daily-container { grid-template-columns: 1fr; }
+    .income-grid { grid-template-columns: 1fr; }
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  .today-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(108,99,255,0.1);
+    padding: 4px 12px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text2);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="logo">
+      <h1>⚡ خطة الثروة</h1>
+      <p>محمد · 25 · الرياض</p>
+    </div>
+
+    <span class="nav-section-label">الرئيسية</span>
+    <button class="nav-btn active" onclick="showPage('dashboard')">
+      <span class="icon">📊</span> لوحة التحكم
+    </button>
+    <button class="nav-btn" onclick="showPage('daily')">
+      <span class="icon">📋</span> مهام اليوم
+    </button>
+
+    <span class="nav-section-label">البناء</span>
+    <button class="nav-btn" onclick="showPage('income')">
+      <span class="icon">💰</span> تتبع الدخل
+    </button>
+    <button class="nav-btn" onclick="showPage('roadmap')">
+      <span class="icon">🗺️</span> خارطة الطريق
+    </button>
+    <button class="nav-btn" onclick="showPage('skills')">
+      <span class="icon">🧠</span> تطوير المهارات
+    </button>
+
+    <span class="nav-section-label">التحليل</span>
+    <button class="nav-btn" onclick="showPage('mistakes')">
+      <span class="icon">⚠️</span> الأخطاء القاتلة
+    </button>
+    <button class="nav-btn" onclick="showPage('mindset')">
+      <span class="icon">🔮</span> عقلية الملايين
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h2>لوحة التحكم</h2>
+        <p>نظرة شاملة على رحلتك نحو المليون ريال</p>
+      </div>
+
+      <div class="today-date" id="today-display"></div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-label">صافي الثروة الحالي</div>
+          <div class="card-value gold" id="net-worth-display">600 ر</div>
+          <div class="card-sub">الهدف: 1,000,000 ريال</div>
+        </div>
+        <div class="card">
+          <div class="card-label">دخل هذا الشهر</div>
+          <div class="card-value green" id="monthly-income-display">0 ر</div>
+          <div class="card-sub">الهدف الأول: 3,000 ريال/شهر</div>
+        </div>
+        <div class="card">
+          <div class="card-label">المهام المكتملة اليوم</div>
+          <div class="card-value accent" id="tasks-done-display">0/0</div>
+          <div class="card-sub">استمر في الزخم</div>
+        </div>
+        <div class="card">
+          <div class="card-label">أيام الانضباط المتتالية</div>
+          <div class="card-value" id="streak-display" style="color:var(--accent3)">0 يوم</div>
+          <div class="card-sub">كل يوم يُحسب</div>
+        </div>
+      </div>
+
+      <!-- Wealth progress -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <div class="progress-title">🎯 تقدمك نحو المليون</div>
+          <div class="progress-amount" id="progress-text">600 / 1,000,000 ريال</div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="wealth-bar" style="width: 0.06%"></div>
+        </div>
+        <div class="progress-stages">
+          <div class="stage-chip current">10,000 ر</div>
+          <div class="stage-chip">50,000 ر</div>
+          <div class="stage-chip">100,000 ر</div>
+          <div class="stage-chip">500,000 ر</div>
+          <div class="stage-chip">1,000,000 ر</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="progress-section">
+        <div class="section-title">📈 تطور الدخل الشهري</div>
+        <div class="chart-placeholder" id="income-chart">
+          <div class="chart-bars" id="chart-bars-container"></div>
+        </div>
+      </div>
+
+      <!-- Update form -->
+      <div class="progress-section">
+        <div class="section-title">🔄 تحديث البيانات</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+          <div class="form-group" style="flex:1;min-width:150px;margin:0">
+            <label>صافي ثروتي الحالي (ريال)</label>
+            <input type="number" id="update-wealth" placeholder="600">
+          </div>
+          <div class="form-group" style="flex:1;min-width:150px;margin:0">
+            <label>دخل هذا الشهر (ريال)</label>
+            <input type="number" id="update-income" placeholder="0">
+          </div>
+          <button class="btn btn-primary" onclick="updateStats()">تحديث</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAILY TASKS -->
+    <div class="page" id="page-daily">
+      <div class="page-header">
+        <h2>مهام اليوم</h2>
+        <p>ركز على هذه المهام — هي الـ 20% التي تصنع 80% من النتائج</p>
+      </div>
+
+      <div class="daily-container">
+        <div>
+          <div class="today-date" id="daily-date"></div>
+          <div class="section-title">📋 قائمة المهام اليومية</div>
+          <div class="task-list" id="task-list"></div>
+
+          <div style="margin-top:20px">
+            <div class="section-title">➕ أضف مهمة مخصصة</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <input type="text" id="new-task-text" placeholder="مهمة جديدة..." style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:inherit;outline:none;direction:rtl">
+              <select id="new-task-cat" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:inherit;outline:none">
+                <option value="income">دخل</option>
+                <option value="skill">مهارة</option>
+                <option value="mindset">عقلية</option>
+                <option value="save">ادخار</option>
+              </select>
+              <button class="btn btn-primary" onclick="addCustomTask()">إضافة</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="panel-card">
+            <h3>📊 إنجاز اليوم</h3>
+            <div style="text-align:center;padding:10px 0">
+              <div style="font-size:48px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--accent)" id="daily-progress-pct">0%</div>
+              <div style="font-size:13px;color:var(--text2);margin-top:4px" id="daily-progress-label">0 من 0 مهمة</div>
+            </div>
+            <div class="progress-bar" style="margin-top:10px">
+              <div class="progress-fill" id="daily-bar" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3>💡 حكمة اليوم</h3>
+            <div class="quote-text" id="daily-quote"></div>
+            <div class="quote-author" id="daily-quote-author"></div>
+          </div>
+
+          <div class="panel-card">
+            <h3>🔥 الأولوية القصوى</h3>
+            <div style="font-size:14px;color:var(--text);line-height:1.7" id="daily-priority"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INCOME TRACKER -->
+    <div class="page" id="page-income">
+      <div class="page-header">
+        <h2>تتبع الدخل والمصروف</h2>
+        <p>ما لا يُقاس لا يُحسَّن — سجّل كل ريال</p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-label">إجمالي الدخل</div>
+          <div class="card-value green" id="total-income">0 ر</div>
+        </div>
+        <div class="card">
+          <div class="card-label">إجمالي المصروف</div>
+          <div class="card-value red" id="total-expense">0 ر</div>
+        </div>
+        <div class="card">
+          <div class="card-label">صافي المدخرات</div>
+          <div class="card-value gold" id="net-savings">0 ر</div>
+        </div>
+        <div class="card">
+          <div class="card-label">معدل الادخار</div>
+          <div class="card-value accent" id="savings-rate">0%</div>
+        </div>
+      </div>
+
+      <div class="income-grid">
+        <div class="income-form">
+          <h3>➕ سجّل إيراد</h3>
+          <div class="form-group">
+            <label>المصدر</label>
+            <input type="text" id="income-desc" placeholder="مثال: مشروع فريلانس — إدارة إعلانات">
+          </div>
+          <div class="form-group">
+            <label>المبلغ (ريال)</label>
+            <input type="number" id="income-amount" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>النوع</label>
+            <select id="income-type">
+              <option value="freelance">فريلانس</option>
+              <option value="salary">راتب</option>
+              <option value="investment">عائد استثماري</option>
+              <option value="other">أخرى</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="addIncome()" style="width:100%">تسجيل الإيراد</button>
+        </div>
+
+        <div class="income-form">
+          <h3>➖ سجّل مصروف</h3>
+          <div class="form-group">
+            <label>البند</label>
+            <input type="text" id="expense-desc" placeholder="مثال: اشتراك دورة تسويق">
+          </div>
+          <div class="form-group">
+            <label>المبلغ (ريال)</label>
+            <input type="number" id="expense-amount" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>التصنيف</label>
+            <select id="expense-type">
+              <option value="essential">أساسي</option>
+              <option value="education">تعليم واستثمار بالنفس</option>
+              <option value="tools">أدوات عمل</option>
+              <option value="lifestyle">أسلوب حياة</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="addExpense()" style="width:100%;background:rgba(255,71,87,0.2);color:var(--red);border:1px solid var(--red)">تسجيل المصروف</button>
+        </div>
+      </div>
+
+      <div class="income-form">
+        <h3>📜 السجل المالي</h3>
+        <div class="entries-list" id="entries-list">
+          <div class="empty-state">لم تسجّل أي معاملات بعد</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="page" id="page-roadmap">
+      <div class="page-header">
+        <h2>خارطة طريق الثروة</h2>
+        <p>من 600 ريال إلى المليون — خطوة خطوة</p>
+      </div>
+
+      <div class="alert">
+        💡 أنت الآن في <strong>المرحلة الأولى</strong>: بناء أول مصدر دخل. لا تنتقل إلى المرحلة التالية حتى تستقر على 3,000 ريال/شهر.
+      </div>
+
+      <div class="roadmap-container">
+
+        <div class="milestone active-ms">
+          <div class="milestone-header">
+            <div class="milestone-amount">10,000 ريال</div>
+            <div class="milestone-badge badge-current">⚡ أنت هنا</div>
+          </div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">الإطار الزمني: 2-4 أشهر</div>
+          <div class="milestone-items">
+            <div class="ms-item"><span class="ms-item-icon">✅</span><span>أنشئ حساباتك على مستقل وFiverr وLinkedIn</span></div>
+            <div class="ms-item"><span class="ms-item-icon">✅</span><span>أنجز 3 مشاريع مجانية لبناء التقييمات أولاً</span></div>
+            <div class="ms-item"><span class="ms-item-icon">✅</span><span>تواصل مع 20 عميل محتمل أسبوعياً</span></div>
+            <div class="ms-item"><span class="ms-item-icon">✅</span><span>أتم شهادة Meta Blueprint المجانية</span></div>
+            <div class="ms-item"><span class="ms-item-icon">✅</span><span>ادخر 100% مما تكسب — لا تصرف على الكماليات</span></div>
+            <div class="ms-item"><span class="ms-item-icon">🚫</span><span>لا تستثمر الآن — المال لا يزال صغيراً</span></div>
+            <div class="ms-item"><span class="ms-item-icon">🚫</span><span>لا تتداول أسهم أو عملات — مجرب ولم يفلح</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone-header">
+            <div class="milestone-amount">50,000 ريال</div>
+            <div class="milestone-badge badge-next">المرحلة التالية</div>
+          </div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">الإطار الزمني: 6-18 شهراً من بدء الدخل</div>
+          <div class="milestone-items">
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>تخصص في نيش واحد: تسويق رقمي للشركات الكيميائية والصيدلانية</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>ارفع أسعارك بعد 5 تقييمات إيجابية</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>حوّل المشاريع المنفردة إلى عقود شهرية ثابتة</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>عند 20,000 ريال: ابدأ ETF بـ 500 ريال/شهر فقط</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>تعلم Python الأساسي لتحليل البيانات (مجاني)</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone-header">
+            <div class="milestone-amount">100,000 ريال</div>
+            <div class="milestone-badge badge-next">المدى المتوسط</div>
+          </div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">الإطار الزمني: 1-2 سنة</div>
+          <div class="milestone-items">
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>وكالة صغيرة أو موظف واحد يساعدك</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>دخل متكرر شهري: 8,000-15,000 ريال/شهر</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>استثمار منتظم: 30% من كل دخل في ETF</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>ادرس CFA Level 1 أو Google Certifications</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone-header">
+            <div class="milestone-amount">500,000 ريال</div>
+            <div class="milestone-badge badge-next">المدى البعيد</div>
+          </div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">الإطار الزمني: 3-6 سنوات</div>
+          <div class="milestone-items">
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>وظيفة في شركة كبرى + عمل مستقل جانبي</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>دخل 20,000-35,000 ريال/شهر</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>صناديق REIT عقارية سعودية</span></div>
+            <div class="ms-item"><span class="ms-item-icon">→</span><span>أصل رقمي واحد يدر دخلاً سلبياً</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone-header">
+            <div class="milestone-amount">1,000,000 ريال 🏆</div>
+            <div class="milestone-badge badge-next">الهدف الكبير</div>
+          </div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">الإطار الزمني: 7-12 سنة من الآن (عمر 32-37)</div>
+          <div class="milestone-items">
+            <div class="ms-item"><span class="ms-item-icon">🌟</span><span>بافتراض 4,000 ريال/شهر استثمار + عائد 10% سنوياً</span></div>
+            <div class="ms-item"><span class="ms-item-icon">🌟</span><span>المليون قابل للتسريع بأصول رقمية وأعمال قابلة للتوسع</span></div>
+            <div class="ms-item"><span class="ms-item-icon">🌟</span><span>الوقت هو أقوى أسلحتك — كل سنة تأخير تكلفك 100,000+ ريال</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="page" id="page-skills">
+      <div class="page-header">
+        <h2>تطوير المهارات</h2>
+        <p>مهاراتك هي رأس مالك الحقيقي — استثمر فيها أولاً</p>
+      </div>
+
+      <div class="alert">
+        🧠 في مرحلتك الحالية: أتقن مهارة واحدة فقط بعمق شديد قبل أن تنتقل إلى التالية. التشتت هو أكبر عدو للتقدم.
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-name">🎯 إدارة إعلانات Meta/Google</div>
+          <div class="skill-desc">الأعلى طلباً وأسرع عائداً لوضعك الحالي. شهادة Meta Blueprint مجانية وتستغرق 10 ساعات فقط.</div>
+          <div class="skill-bar-label">
+            <span>مستوى الإتقان</span>
+            <span id="skill1-val">0%</span>
+          </div>
+          <div class="skill-progress">
+            <div class="skill-fill" id="skill1-bar" style="width:0%"></div>
+          </div>
+          <input type="range" min="0" max="100" value="0" style="width:100%;margin-top:8px;accent-color:var(--accent)" oninput="updateSkill('skill1',this.value)">
+          <div class="skill-tag">الأولوية: عاجلة</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">✍️ كتابة محتوى تقني/علمي</div>
+          <div class="skill-desc">ندرة عالية في السوق العربي. الكيمياء تمنحك ميزة تنافسية لا يمتلكها 99% من الكتّاب.</div>
+          <div class="skill-bar-label">
+            <span>مستوى الإتقان</span>
+            <span id="skill2-val">0%</span>
+          </div>
+          <div class="skill-progress">
+            <div class="skill-fill" id="skill2-bar" style="width:0%"></div>
+          </div>
+          <input type="range" min="0" max="100" value="0" style="width:100%;margin-top:8px;accent-color:var(--accent)" oninput="updateSkill('skill2',this.value)">
+          <div class="skill-tag">الأولوية: عالية</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">🐍 Python للتحليل</div>
+          <div class="skill-desc">يضاعف قيمتك السوقية بشكل كبير. مجاني 100% عبر YouTube وGoogle Colab. 3 أشهر من الممارسة كافية.</div>
+          <div class="skill-bar-label">
+            <span>مستوى الإتقان</span>
+            <span id="skill3-val">0%</span>
+          </div>
+          <div class="skill-progress">
+            <div class="skill-fill" id="skill3-bar" style="width:0%"></div>
+          </div>
+          <input type="range" min="0" max="100" value="0" style="width:100%;margin-top:8px;accent-color:var(--accent)" oninput="updateSkill('skill3',this.value)">
+          <div class="skill-tag">الأولوية: متوسطة — ابدأ بعد أول دخل</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">🔗 LinkedIn وبناء النتورك</div>
+          <div class="skill-desc">في السعودية، العلاقات تساوي فرصاً. 15 دقيقة يومياً على LinkedIn تبني جسراً لعملاء جدد.</div>
+          <div class="skill-bar-label">
+            <span>مستوى الإتقان</span>
+            <span id="skill4-val">0%</span>
+          </div>
+          <div class="skill-progress">
+            <div class="skill-fill" id="skill4-bar" style="width:0%"></div>
+          </div>
+          <input type="range" min="0" max="100" value="0" style="width:100%;margin-top:8px;accent-color:var(--accent)" oninput="updateSkill('skill4',this.value)">
+          <div class="skill-tag">الأولوية: عالية</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">🤖 الذكاء الاصطناعي والأتمتة</div>
+          <div class="skill-desc">Prompt Engineering وأدوات مثل Make.com وVoiceflow تُمكّنك من تقديم خدمات أعلى قيمة بوقت أقل.</div>
+          <div class="skill-bar-label">
+            <span>مستوى الإتقان</span>
+            <span id="skill5-val">0%</span>
+          </div>
+          <div class="skill-progress">
+            <div class="skill-fill" id="skill5-bar" style="width:0%"></div>
+          </div>
+          <input type="range" min="0" max="100" value="0" style="width:100%;margin-top:8px;accent-color:var(--accent)" oninput="updateSkill('skill5',this.value)">
+          <div class="skill-tag">الأولوية: مستقبلية</div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">💼 المبيعات والإقناع</div>
+          <div class="skill-desc">نافال: "تعلم البيع والبناء معاً وستكون لا يُهزم." بيع نفسك للعميل هو المهارة الأولى التي تحتاجها.</div>
+          <div class="skill-bar-label">
+            <span>مستوى الإتقان</span>
+            <span id="skill6-val">0%</span>
+          </div>
+          <div class="skill-progress">
+            <div class="skill-fill" id="skill6-bar" style="width:0%"></div>
+          </div>
+          <input type="range" min="0" max="100" value="0" style="width:100%;margin-top:8px;accent-color:var(--accent)" oninput="updateSkill('skill6',this.value)">
+          <div class="skill-tag">الأولوية: عاجلة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISTAKES -->
+    <div class="page" id="page-mistakes">
+      <div class="page-header">
+        <h2>الأخطاء القاتلة</h2>
+        <p>الفرق بين من وصل ومن لم يصل أحياناً هو مجرد تجنب هذه الأخطاء</p>
+      </div>
+
+      <div class="alert warning">
+        ⚠️ بناءً على تجاربك السابقة في التداول والاستثمار — هذه الأخطاء مجربة وموثقة في حالتك تحديداً.
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+
+        <div class="milestone" style="border-color:var(--red)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <span style="font-size:24px">💸</span>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--red)">التداول النشط بدون خبرة حقيقية</div>
+              <div style="font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace">ارتكبته بالفعل — لا تعود إليه</div>
+            </div>
+          </div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">90% من المتداولين يخسرون على المدى الطويل. التداول ليس استثماراً، هو مضاربة. بالنسبة لك الآن: لديك 600 ريال ولا دخل — كل ريال تخسره يؤخرك أشهراً. الوقت لبناء مهارة تدر دخلاً ثابتاً.</div>
+        </div>
+
+        <div class="milestone" style="border-color:rgba(255,107,53,0.5)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <span style="font-size:24px">📚</span>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--accent3)">شراء كورسات بدلاً من التطبيق</div>
+            </div>
+          </div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">القاعدة: لا تدفع على كورس حتى تستنفد الموارد المجانية. YouTube + Google + Meta يعطونك 80% من المعرفة مجاناً. الـ 20% الباقية يعطيك إياها التطبيق الفعلي، لا الكورسات.</div>
+        </div>
+
+        <div class="milestone" style="border-color:rgba(255,107,53,0.5)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <span style="font-size:24px">⏳</span>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--accent3)">انتظار الوقت "المناسب" للبدء</div>
+            </div>
+          </div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">كل أسبوع تنتظر = أسبوع دخل ضائع. "لما أتخرج"، "لما أتعلم أكثر"، "لما يتحسن وضعي" — هذه جمل تؤخرك لسنوات. العملاء لا يطلبون شهادة، يطلبون نتائج.</div>
+        </div>
+
+        <div class="milestone" style="border-color:rgba(255,107,53,0.5)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <span style="font-size:24px">💰</span>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--accent3)">توسيع النفقات مع أول دخل</div>
+            </div>
+          </div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">Parkinson's Law: النفقات تتوسع لتملأ الدخل المتاح. القاعدة الحديدية: عندما يبدأ دخلك، ادخر 20% تلقائياً قبل أن تلمس المبلغ. تعيش بـ 80% كما كنت تعيش بـ 0% الآن.</div>
+        </div>
+
+        <div class="milestone" style="border-color:rgba(255,107,53,0.5)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <span style="font-size:24px">🌊</span>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--accent3)">التشتت بين عشرة أفكار في وقت واحد</div>
+            </div>
+          </div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">اخترت السوق الأمريكي والسعودي وأشياء أخرى في وقت واحد. النتيجة: صفر. القانون الذهبي: مهارة واحدة + نيش واحد + منصة واحدة حتى تصل إلى 3,000 ريال/شهر. ثم توسع.</div>
+        </div>
+
+        <div class="milestone" style="border-color:rgba(255,107,53,0.5)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <span style="font-size:24px">🧠</span>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--accent3)">المعتقد: "أحتاج رأس مال للبدء"</div>
+            </div>
+          </div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">رأس مالك الحقيقي هو 12 ساعة يومياً × 365 يوم = 4,380 ساعة سنوياً. لو استثمرت 20% منها فقط في مهارة = 876 ساعة. هذا يكفي لتصبح من أفضل 10% في أي مجال.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MINDSET -->
+    <div class="page" id="page-mindset">
+      <div class="page-header">
+        <h2>عقلية أصحاب الملايين</h2>
+        <p>الفرق ليس الحظ — الفرق في طريقة التفكير</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+
+        <div class="panel-card">
+          <h3>💡 وارن بافيت — الصبر</h3>
+          <div class="quote-text">"سوق الأسهم هو وسيلة لنقل المال من غير الصبورين إلى الصبورين." الثروة الحقيقية تُبنى ببطء ثم تتسارع بشكل مفاجئ — هذا هو التراكم المركب.</div>
+        </div>
+
+        <div class="panel-card">
+          <h3>🔑 نافال رافيكانت — الرافعة</h3>
+          <div class="quote-text">"اكسب المال وأنت نائم أو ستعمل حتى تموت." ابحث دائماً عن الرافعة: الكود، المحتوى، رأس المال، والعلاقات — هي التي تضاعف وقتك.</div>
+        </div>
+
+        <div class="panel-card">
+          <h3>🏗️ أندرو كارنيغي — التركيز</h3>
+          <div class="quote-text">"ضع كل بيضك في سلة واحدة ثم راقب تلك السلة جيداً." التنويع للحفاظ على الثروة. التركيز لبناء الثروة. أنت الآن في مرحلة التركيز.</div>
+        </div>
+
+        <div class="panel-card">
+          <h3>📐 تشارلي مونغر — التفكير المعكوس</h3>
+          <div class="quote-text">"كل ما أريد معرفته هو أين سأموت حتى لا أذهب إلى هناك." فكر دائماً: ما الأشياء التي ستدمر ثروتي؟ تجنبها بشكل منهجي.</div>
+        </div>
+
+        <div class="panel-card">
+          <h3>⚡ أليكس هورموزي — القيمة</h3>
+          <div class="quote-text">"لا تفكر في كيف تكسب المال — فكر في كيف تقدم قيمة هائلة لشخص واحد بعينه. المال نتيجة، ليس هدفاً."</div>
+        </div>
+
+        <div class="panel-card">
+          <h3>🔭 بيتر ثيل — الاحتكار</h3>
+          <div class="quote-text">"المنافسة للخاسرين." ابحث دائماً عن تقاطع فريد لا أحد غيرك يملكه. عندك: كيمياء + تسويق رقمي + عربي — هذا تقاطع نادر جداً.</div>
+        </div>
+
+        <div class="panel-card" style="grid-column: 1 / -1">
+          <h3>🔄 الفرق الحقيقي في طريقة التفكير</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px">
+            <div>
+              <div style="font-size:12px;color:var(--red);margin-bottom:10px;font-family:'IBM Plex Mono',monospace">تفكير الفقر</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text2)">
+                <span>→ كيف أوفّر أكثر؟</span>
+                <span>→ هذا المشروع مخاطرة</span>
+                <span>→ أحتاج رأس مال أولاً</span>
+                <span>→ أنتظر الوقت المناسب</span>
+                <span>→ أخاف الفشل</span>
+                <span>→ المال شحيح ومحدود</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:12px;color:var(--green);margin-bottom:10px;font-family:'IBM Plex Mono',monospace">تفكير الثروة</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text)">
+                <span>→ كيف أزيد الدخل 10x؟</span>
+                <span>→ ما تكلفة عدم المحاولة؟</span>
+                <span>→ ما مهارتي التي أبيعها اليوم؟</span>
+                <span>→ البدء الآن مع ما لدي</span>
+                <span>→ الفشل تكلفة التعلم</span>
+                <span>→ القيمة تُخلق، لا تُوزَّع</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===== STATE MANAGEMENT =====
+let state = {
+  netWorth: 600,
+  monthlyIncome: 0,
+  streak: 0,
+  lastVisit: null,
+  tasks: [],
+  entries: [],
+  monthlyData: [],
+  skills: { skill1: 0, skill2: 0, skill3: 0, skill4: 0, skill5: 0, skill6: 0 }
+};
+
+const DEFAULT_TASKS = [
+  { id: 1, text: "تواصل مع 5 عملاء محتملين عبر مستقل أو LinkedIn", cat: "income", done: false },
+  { id: 2, text: "خصص ساعة لتعلم إعلانات Meta Blueprint (مجاناً)", cat: "skill", done: false },
+  { id: 3, text: "اكتب رسالة تعريفية جديدة لخدمتك وحسّنها", cat: "income", done: false },
+  { id: 4, text: "راجع ما أنجزته أمس وسجّل درساً واحداً تعلمته", cat: "mindset", done: false },
+  { id: 5, text: "انشر تدوينة أو تعليق احترافي واحد على LinkedIn", cat: "skill", done: false },
+  { id: 6, text: "لا تصرف على أي شيء غير أساسي اليوم", cat: "save", done: false },
+  { id: 7, text: "اقرأ أو استمع لـ 20 دقيقة عن التسويق الرقمي", cat: "skill", done: false },
+  { id: 8, text: "حدّث ملف Portfolio بأي عمل أو فكرة جديدة", cat: "income", done: false },
+];
+
+const QUOTES = [
+  { text: "لا يهمني كم تكسب بالسنة — يهمني أنك لا تتوقف أبداً.", author: "— وارن بافيت" },
+  { text: "اكسب المال وأنت نائم أو ستعمل حتى تموت. ابحث عن الرافعة.", author: "— نافال رافيكانت" },
+  { text: "وقتك أقوى أصل تملكه. أنت تملك 12 ساعة يومياً — هذه ثروة.", author: "— الخطة" },
+  { text: "المنافسة للخاسرين. ابحث عن التقاطع الفريد الذي لا يملكه أحد غيرك.", author: "— بيتر ثيل" },
+  { text: "لا تفكر في كيف تكسب المال — فكر في كيف تقدم قيمة هائلة لشخص واحد.", author: "— أليكس هورموزي" },
+  { text: "ضع كل بيضك في سلة واحدة ثم راقب تلك السلة جيداً.", author: "— أندرو كارنيغي" },
+  { text: "تعلم البيع والبناء معاً وستكون لا يُهزم.", author: "— نافال رافيكانت" },
+];
+
+const PRIORITIES = [
+  "🎯 أنشئ حسابك على مستقل اليوم — لا غداً، اليوم.",
+  "📞 تواصل مع شخص واحد تعرفه يملك عملاً — اعرض مساعدتك بالتسويق.",
+  "📜 أتمم أول درس في Meta Blueprint — 30 دقيقة كافية الآن.",
+  "✍️ اكتب وصفاً لخدمتك في 3 جمل فقط — ما تقدمه، لمن، وما النتيجة.",
+  "🔗 حدّث بروفايل LinkedIn بمعلوماتك الحقيقية — صورة، عنوان، خبرات.",
+];
+
+// ===== STORAGE: tries window.storage first, falls back to sessionStorage =====
+async function persist(key, value) {
+  const str = JSON.stringify(value);
+  // Try window.storage (Claude persistent)
+  if (window.storage) {
+    try {
+      const r = await window.storage.set(key, str);
+      if (r) return; // success
+    } catch(e) {}
+  }
+  // Fallback: sessionStorage (survives refresh, not tab close)
+  try { sessionStorage.setItem(key, str); } catch(e) {}
+}
+
+async function retrieve(key) {
+  if (window.storage) {
+    try {
+      const r = await window.storage.get(key);
+      if (r && r.value) return JSON.parse(r.value);
+    } catch(e) {}
+  }
+  try {
+    const v = sessionStorage.getItem(key);
+    if (v) return JSON.parse(v);
+  } catch(e) {}
+  return null;
+}
+
+async function loadState() {
+  try {
+    const meta = await retrieve('ws_meta');
+    if (meta) {
+      state.netWorth = meta.netWorth ?? state.netWorth;
+      state.monthlyIncome = meta.monthlyIncome ?? state.monthlyIncome;
+      state.streak = meta.streak ?? state.streak;
+      state.lastVisit = meta.lastVisit ?? state.lastVisit;
+    }
+    const tasks = await retrieve('ws_tasks');
+    if (tasks) state.tasks = tasks;
+    const entries = await retrieve('ws_entries');
+    if (entries) state.entries = entries;
+    const skills = await retrieve('ws_skills');
+    if (skills) state.skills = skills;
+    const monthlyData = await retrieve('ws_monthlyData');
+    if (monthlyData) state.monthlyData = monthlyData;
+  } catch(e) {}
+  checkNewDay();
+}
+
+async function saveState() {
+  try {
+    await persist('ws_meta', { netWorth: state.netWorth, monthlyIncome: state.monthlyIncome, streak: state.streak, lastVisit: state.lastVisit });
+    await persist('ws_tasks', state.tasks || []);
+    await persist('ws_entries', state.entries || []);
+    await persist('ws_skills', state.skills || {});
+    await persist('ws_monthlyData', state.monthlyData || []);
+  } catch(e) {}
+}
+
+async function checkNewDay() {
+  const today = new Date().toDateString();
+  if (state.lastVisit !== today) {
+    state.tasks = DEFAULT_TASKS.map(t => ({ ...t, done: false }));
+    if (state.lastVisit) {
+      state.streak = (state.streak || 0) + 1;
+    }
+    state.lastVisit = today;
+    await saveState();
+  } else if (!state.tasks || state.tasks.length === 0) {
+    state.tasks = DEFAULT_TASKS.map(t => ({ ...t, done: false }));
+  }
+}
+
+// ===== NAVIGATION =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(name)) {
+      b.classList.add('active');
+    }
+  });
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ===== RENDER FUNCTIONS =====
+function renderDashboard() {
+  const today = new Date();
+  document.getElementById('today-display').textContent =
+    today.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  document.getElementById('net-worth-display').textContent = formatNum(state.netWorth) + ' ر';
+  document.getElementById('monthly-income-display').textContent = formatNum(state.monthlyIncome) + ' ر';
+  document.getElementById('streak-display').textContent = (state.streak || 0) + ' يوم';
+
+  const done = (state.tasks || []).filter(t => t.done).length;
+  const total = (state.tasks || []).length;
+  document.getElementById('tasks-done-display').textContent = done + '/' + total;
+
+  const pct = Math.min((state.netWorth / 1000000) * 100, 100);
+  document.getElementById('wealth-bar').style.width = Math.max(pct, 0.1) + '%';
+  document.getElementById('progress-text').textContent = formatNum(state.netWorth) + ' / 1,000,000 ريال';
+
+  renderChart();
+}
+
+function renderChart() {
+  const container = document.getElementById('chart-bars-container');
+  const months = ['ش1','ش2','ش3','ش4','ش5','ش6'];
+  const data = state.monthlyData && state.monthlyData.length > 0
+    ? state.monthlyData.slice(-6)
+    : [0, 0, 0, 0, 0, state.monthlyIncome || 0];
+
+  const maxVal = Math.max(...data, 1);
+  container.innerHTML = data.map((v, i) => {
+    const h = Math.max((v / maxVal) * 140, 4);
+    return `<div class="chart-bar-wrap">
+      <div class="chart-bar income-bar" style="height:${h}px"></div>
+      <div class="chart-bar-label">${months[i]}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  if (!state.tasks || state.tasks.length === 0) {
+    list.innerHTML = '<div class="empty-state">لا توجد مهام</div>';
+    return;
+  }
+
+  list.innerHTML = state.tasks.map(task => `
+    <div class="task-item ${task.done ? 'done' : ''}" onclick="toggleTask(${task.id})">
+      <div class="task-check">${task.done ? '✓' : ''}</div>
+      <div class="task-text">${task.text}</div>
+      <div class="task-category cat-${task.cat}">${getCatLabel(task.cat)}</div>
+    </div>
+  `).join('');
+
+  const done = state.tasks.filter(t => t.done).length;
+  const total = state.tasks.length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  document.getElementById('daily-progress-pct').textContent = pct + '%';
+  document.getElementById('daily-progress-label').textContent = done + ' من ' + total + ' مهمة';
+  document.getElementById('daily-bar').style.width = pct + '%';
+
+  const today = new Date();
+  document.getElementById('daily-date').textContent =
+    today.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  const q = QUOTES[today.getDate() % QUOTES.length];
+  document.getElementById('daily-quote').textContent = q.text;
+  document.getElementById('daily-quote-author').textContent = q.author;
+  document.getElementById('daily-priority').textContent = PRIORITIES[today.getDay() % PRIORITIES.length];
+}
+
+function getCatLabel(cat) {
+  return { income: 'دخل', skill: 'مهارة', mindset: 'عقلية', save: 'ادخار' }[cat] || cat;
+}
+
+async function toggleTask(id) {
+  const task = state.tasks.find(t => t.id === id);
+  if (task) {
+    task.done = !task.done;
+    await saveState();
+    renderTasks();
+    renderDashboard();
+  }
+}
+
+async function addCustomTask() {
+  const text = document.getElementById('new-task-text').value.trim();
+  const cat = document.getElementById('new-task-cat').value;
+  if (!text) return;
+  const newId = Math.max(...state.tasks.map(t => t.id), 0) + 1;
+  state.tasks.push({ id: newId, text, cat, done: false });
+  document.getElementById('new-task-text').value = '';
+  await saveState();
+  renderTasks();
+}
+
+function renderIncome() {
+  const entries = state.entries || [];
+  const income = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+  const expense = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
+  const net = income - expense;
+  const rate = income > 0 ? Math.round((net / income) * 100) : 0;
+
+  document.getElementById('total-income').textContent = formatNum(income) + ' ر';
+  document.getElementById('total-expense').textContent = formatNum(expense) + ' ر';
+  document.getElementById('net-savings').textContent = formatNum(net) + ' ر';
+  document.getElementById('savings-rate').textContent = rate + '%';
+
+  const list = document.getElementById('entries-list');
+  if (entries.length === 0) {
+    list.innerHTML = '<div class="empty-state">لم تسجّل أي معاملات بعد</div>';
+    return;
+  }
+
+  list.innerHTML = [...entries].reverse().map((e, i) => `
+    <div class="entry-item">
+      <div class="entry-info">
+        <div class="entry-desc">${e.desc}</div>
+        <div class="entry-date">${e.date} · ${e.cat}</div>
+      </div>
+      <div class="entry-amount ${e.type === 'expense' ? 'expense' : ''}">
+        ${e.type === 'expense' ? '-' : '+'}${formatNum(e.amount)} ر
+      </div>
+      <button class="btn btn-danger" onclick="deleteEntry(${entries.length - 1 - i})" style="margin-right:8px">حذف</button>
+    </div>
+  `).join('');
+}
+
+async function addIncome() {
+  const desc = document.getElementById('income-desc').value.trim();
+  const amount = parseFloat(document.getElementById('income-amount').value);
+  const cat = document.getElementById('income-type').value;
+  if (!desc || !amount || amount <= 0) return;
+  state.entries = state.entries || [];
+  state.entries.push({ type: 'income', desc, amount, cat, date: new Date().toLocaleDateString('ar-SA') });
+  document.getElementById('income-desc').value = '';
+  document.getElementById('income-amount').value = '';
+  await saveState();
+  renderIncome();
+}
+
+async function addExpense() {
+  const desc = document.getElementById('expense-desc').value.trim();
+  const amount = parseFloat(document.getElementById('expense-amount').value);
+  const cat = document.getElementById('expense-type').value;
+  if (!desc || !amount || amount <= 0) return;
+  state.entries = state.entries || [];
+  state.entries.push({ type: 'expense', desc, amount, cat, date: new Date().toLocaleDateString('ar-SA') });
+  document.getElementById('expense-desc').value = '';
+  document.getElementById('expense-amount').value = '';
+  await saveState();
+  renderIncome();
+}
+
+async function deleteEntry(idx) {
+  state.entries.splice(idx, 1);
+  await saveState();
+  renderIncome();
+}
+
+async function updateSkill(id, val) {
+  state.skills[id] = parseInt(val);
+  document.getElementById(id + '-val').textContent = val + '%';
+  document.getElementById(id + '-bar').style.width = val + '%';
+  await saveState();
+}
+
+async function updateStats() {
+  const w = parseFloat(document.getElementById('update-wealth').value);
+  const i = parseFloat(document.getElementById('update-income').value);
+  if (!isNaN(w) && w >= 0) state.netWorth = w;
+  if (!isNaN(i) && i >= 0) {
+    state.monthlyIncome = i;
+    state.monthlyData = state.monthlyData || [];
+    state.monthlyData.push(i);
+    if (state.monthlyData.length > 12) state.monthlyData.shift();
+  }
+  document.getElementById('update-wealth').value = '';
+  document.getElementById('update-income').value = '';
+  await saveState();
+  renderDashboard();
+}
+
+function formatNum(n) {
+  return Math.round(n).toLocaleString('ar-SA');
+}
+
+// ===== INIT =====
+async function init() {
+  document.body.style.opacity = '0.4';
+  document.body.style.transition = 'opacity 0.3s';
+
+  await loadState();
+
+  renderDashboard();
+  renderTasks();
+  renderIncome();
+
+  const skills = state.skills || {};
+  Object.keys(skills).forEach(id => {
+    const val = skills[id];
+    const bar = document.getElementById(id + '-bar');
+    const valEl = document.getElementById(id + '-val');
+    if (bar) bar.style.width = val + '%';
+    if (valEl) valEl.textContent = val + '%';
+    const slider = document.querySelector(`input[oninput="updateSkill('${id}',this.value)"]`);
+    if (slider) slider.value = val;
+  });
+
+  document.body.style.opacity = '1';
+}
+
+init();
+</script>
+</body>
+</html>
